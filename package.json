@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint ./index.js --fix"
   },
   "repository": {
     "type": "git",
@@ -19,14 +19,13 @@
     "iframe"
   ],
   "author": "Oleg Dutchenko",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/WezomAgency/zz-load/blob/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/WezomAgency/zz-load/issues"
   },
-  "homepage": "https://github.com/WezomAgency/zz-load#readme"
+  "homepage": "https://github.com/WezomAgency/zz-load#readme",
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-config-wezom-relax": "^1.0.1"
+  }
 }
