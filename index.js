@@ -38,58 +38,67 @@ const _extend = (userOptions = {}) => {
  * @param {Element} element
  * @param {Function} onLoad
  * @param {Function} onError
+ * @return {Promise|null}
  * @private
  */
 const _load = (element, onLoad, onError) => {
-	_markAs.processed(element);
+	/**
+	 * @param {Function} [resolve]
+	 * @param {Function} [reject]
+	 * @return
+	 */
+	let load = (resolve, reject) => {
+		_markAs.processed(element);
+		let img = document.createElement('img');
 
-	let img = document.createElement('img');
+		img.onload = () => {
+			const src = img.src;
+			const loadEvent = new window.CustomEvent('zzload:load', {
+				detail: { element, src }
+			});
+			_markAs.loaded(element);
+			element.dispatchEvent(loadEvent);
+			onLoad(element, img.src);
+			if (resolve) {
+				resolve(element, img.src);
+			}
+		};
 
-	img.onload = () => {
-		_markAs.loaded(element);
-		onLoad(element, img.src);
+		img.onerror = () => {
+			const src = img.src;
+			const errorEvent = new window.CustomEvent('zzload:error', {
+				detail: { element, src }
+			});
+			_markAs.failed(element);
+			element.dispatchEvent(errorEvent);
+			onError(element, src);
+			if (reject) {
+				reject(element, src);
+			}
+		};
+
+		let dataImg = element.getAttribute('data-zzload-img');
+		if (dataImg) {
+			img.src = dataImg;
+			element.src = dataImg;
+			return null;
+		}
+
+		let dataBgImg = element.getAttribute('data-zzload-background-img');
+		if (dataBgImg) {
+			img.src = dataBgImg;
+			element.style.backgroundImage = `url(${dataBgImg})`;
+			return null;
+		}
 	};
 
-	img.onerror = () => {
-		_markAs.failed(element);
-		onError(element, img.src);
-	};
-
-	let dataImg = element.getAttribute('data-zzload-img');
-	if (dataImg) {
-		img.src = dataImg;
-		element.src = dataImg;
-		return null;
+	if (window.Promise) {
+		return new Promise((resolve, reject) => {
+			load(resolve, reject);
+		});
 	}
-
-	let dataBgImg = element.getAttribute('data-zzload-background-img');
-	if (dataBgImg) {
-		img.src = dataBgImg;
-		element.style.backgroundImage = `url(${dataBgImg})`;
-		return null;
-	}
-
-	// if (element.nodeName.toLowerCase() === 'picture') {
-	// 	if (isIE && element.getAttribute('data-iesrc')) {
-	// 		img.src = element.getAttribute('data-iesrc');
-	// 	}
-	// 	if (element.getAttribute('data-alt')) {
-	// 		img.alt = element.getAttribute('data-alt');
-	// 	}
-	// 	element.appendChild(img);
-	// }
-	// if (element.getAttribute('data-src')) {
-	// 	element.src = element.getAttribute('data-src');
-	// }
-	// if (element.getAttribute('data-srcset')) {
-	// 	element.setAttribute('srcset', element.getAttribute('data-srcset'));
-	// }
-	// if (element.getAttribute('data-background-image')) {
-	// 	element.style.backgroundImage = `url('${element.getAttribute('data-background-image')}')`;
-	// }
-	// if (element.getAttribute('data-toggle-class')) {
-	// 	element.classList.toggle(element.getAttribute('data-toggle-class'));
-	// }
+	load();
+	return null;
 };
 
 /**
@@ -130,9 +139,7 @@ const _checkIs = {
 const _onIntersection = options => (entries, observer) => {
 	entries.forEach(entry => {
 		if (entry.intersectionRatio > 0 || entry.isIntersecting) {
-			/**
-			 * @type {Element}
-			 */
+			/** @type {Element} */
 			let element = entry.target;
 			observer.unobserve(element);
 			if (!_checkIs.processed(element)) {
@@ -202,7 +209,7 @@ function zzLoad (elements, userOptions) {
 			if (_checkIs.processed(element)) {
 				return;
 			}
-			_load(element, options.onLoad, options.onError);
+			return _load(element, options.onLoad, options.onError);
 		}
 	};
 }

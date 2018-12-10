@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "eslint ./index.js --fix"
+    "test": "eslint ./index.js --fix",
+    "build": "npm test && npm run rollup && npm run uglify",
+    "rollup": "rollup -c",
+    "uglify": "uglifyjs -cmo dist/zz-load.min.js -- dist/zz-load.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +28,12 @@
   },
   "homepage": "https://github.com/WezomAgency/zz-load#readme",
   "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "babel-preset-env": "^2.0.0-alpha.20",
     "eslint": "^5.10.0",
-    "eslint-config-wezom-relax": "^1.0.1"
+    "eslint-config-wezom-relax": "^1.0.1",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.0.3",
+    "uglify-js": "^3.4.9"
   }
 }
