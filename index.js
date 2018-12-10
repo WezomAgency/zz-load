@@ -38,10 +38,11 @@ const _extend = (userOptions = {}) => {
  * @param {Element} element
  * @param {Function} onLoad
  * @param {Function} onError
- * @return {Promise|null}
+ * @param {boolean} [asPromise]
+ * @return {null|Promise}
  * @private
  */
-const _load = (element, onLoad, onError) => {
+const _load = (element, onLoad, onError, asPromise) => {
 	/**
 	 * @param {Function} [resolve]
 	 * @param {Function} [reject]
@@ -92,7 +93,7 @@ const _load = (element, onLoad, onError) => {
 		}
 	};
 
-	if (window.Promise) {
+	if (asPromise && window.Promise) {
 		return new Promise((resolve, reject) => {
 			load(resolve, reject);
 		});
@@ -209,7 +210,7 @@ function zzLoad (elements, userOptions) {
 			if (_checkIs.processed(element)) {
 				return;
 			}
-			return _load(element, options.onLoad, options.onError);
+			return _load(element, options.onLoad, options.onError, true);
 		}
 	};
 }
