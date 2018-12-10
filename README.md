@@ -29,7 +29,6 @@
 #### NPM
 
 ```bash
-# bash
 npm i zz-load
 ```
 
@@ -67,14 +66,16 @@ CSS for transition
     opacity: 0;
 }
 
-.custom-image.is-loaded {
+/* zz-load will add `data-zzload-is-loaded` attribute
+   after fully resource loaded */
+.custom-image[data-zzload-is-loaded] {
     opacity: 1;
     transition: opacity .3s ease;
 }
 ```
 
 
-include js module
+import js module
 
 ```js
 import zzLoad from 'zz-load';
