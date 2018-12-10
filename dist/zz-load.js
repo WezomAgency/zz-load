@@ -96,7 +96,7 @@ var zzLoad = (function () {
 	      }
 	    };
 
-	    var dataImg = element.getAttribute('data-zzload-img');
+	    var dataImg = element.getAttribute('data-zzload-source-img');
 
 	    if (dataImg) {
 	      img.src = dataImg;
@@ -104,7 +104,7 @@ var zzLoad = (function () {
 	      return null;
 	    }
 
-	    var dataBgImg = element.getAttribute('data-zzload-background-img');
+	    var dataBgImg = element.getAttribute('data-zzload-source-background-img');
 
 	    if (dataBgImg) {
 	      img.src = dataBgImg;
@@ -129,13 +129,13 @@ var zzLoad = (function () {
 
 	var _markAs = {
 	  processed: function processed(element) {
-	    element.setAttribute('data-zzload-processed', true);
+	    element.setAttribute('data-zzload-is-processed', true);
 	  },
 	  loaded: function loaded(element) {
-	    element.setAttribute('data-zzload-loaded', true);
+	    element.setAttribute('data-zzload-is-loaded', true);
 	  },
 	  failed: function failed(element) {
-	    element.setAttribute('data-zzload-failed', true);
+	    element.setAttribute('data-zzload-is-failed', true);
 	  }
 	};
 	/**
@@ -144,13 +144,13 @@ var zzLoad = (function () {
 
 	var _checkIs = {
 	  processed: function processed(element) {
-	    return element.getAttribute('data-zzload-processed') === 'true';
+	    return element.getAttribute('data-zzload-is-processed') === 'true';
 	  },
 	  loaded: function loaded(element) {
-	    return element.getAttribute('data-zzload-loaded') === 'true';
+	    return element.getAttribute('data-zzload-is-loaded') === 'true';
 	  },
 	  failed: function failed(element) {
-	    return element.getAttribute('data-zzload-failed') === 'true';
+	    return element.getAttribute('data-zzload-is-failed') === 'true';
 	  }
 	};
 	/**
@@ -204,9 +204,9 @@ var zzLoad = (function () {
 	// ----------------------------------------
 
 	/**
-	 * @param {string|Element|NodeList|jQuery} [elements=".zz-load"]
-	 * @param {Object} [userOptions={}]
-	 * @return {{observe(): void, triggerLoad(): void}}
+	 * @param elements
+	 * @param userOptions
+	 * @return {*}
 	 */
 
 

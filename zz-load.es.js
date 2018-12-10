@@ -78,14 +78,14 @@ const _load = (element, onLoad, onError, asPromise) => {
 			}
 		};
 
-		let dataImg = element.getAttribute('data-zzload-img');
+		let dataImg = element.getAttribute('data-zzload-source-img');
 		if (dataImg) {
 			img.src = dataImg;
 			element.src = dataImg;
 			return null;
 		}
 
-		let dataBgImg = element.getAttribute('data-zzload-background-img');
+		let dataBgImg = element.getAttribute('data-zzload-source-background-img');
 		if (dataBgImg) {
 			img.src = dataBgImg;
 			element.style.backgroundImage = `url(${dataBgImg})`;
@@ -107,13 +107,13 @@ const _load = (element, onLoad, onError, asPromise) => {
  */
 const _markAs = {
 	processed (element) {
-		element.setAttribute('data-zzload-processed', true);
+		element.setAttribute('data-zzload-is-processed', true);
 	},
 	loaded (element) {
-		element.setAttribute('data-zzload-loaded', true);
+		element.setAttribute('data-zzload-is-loaded', true);
 	},
 	failed (element) {
-		element.setAttribute('data-zzload-failed', true);
+		element.setAttribute('data-zzload-is-failed', true);
 	}
 };
 
@@ -122,13 +122,13 @@ const _markAs = {
  */
 const _checkIs = {
 	processed (element) {
-		return element.getAttribute('data-zzload-processed') === 'true';
+		return element.getAttribute('data-zzload-is-processed') === 'true';
 	},
 	loaded (element) {
-		return element.getAttribute('data-zzload-loaded') === 'true';
+		return element.getAttribute('data-zzload-is-loaded') === 'true';
 	},
 	failed (element) {
-		return element.getAttribute('data-zzload-failed') === 'true';
+		return element.getAttribute('data-zzload-is-failed') === 'true';
 	}
 };
 
@@ -176,9 +176,9 @@ const _getElements = (element) => {
 // ----------------------------------------
 
 /**
- * @param {string|Element|NodeList|jQuery} [elements=".zz-load"]
- * @param {Object} [userOptions={}]
- * @return {{observe(): void, triggerLoad(): void}}
+ * @param elements
+ * @param userOptions
+ * @return {*}
  */
 function zzLoad (elements, userOptions) {
 	let options = _extend(userOptions);

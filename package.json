@@ -2,9 +2,9 @@
   "name": "zz-load",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "zz-load.es.js",
   "scripts": {
-    "test": "eslint ./index.js --fix",
+    "test": "eslint ./zz-load.es.js --fix",
     "build": "npm test && npm run rollup && npm run uglify",
     "rollup": "rollup -c",
     "uglify": "uglifyjs -cmo dist/zz-load.min.js -- dist/zz-load.js"
