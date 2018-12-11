@@ -25,6 +25,9 @@
 | `triggerLoad()` method return Promise _(if supports)_  | _No_      | _**Yes**_ |
 
 
+--- 
+
+
 ## Install
 
 #### NPM
@@ -95,4 +98,119 @@ then fire up
 const observer = zzLoad();
 observer.observe();
 ```
+
+---
+
+### More Examples
+
+---
+
+## API
+
+## `zzLoad([elements][, options]): observer`
+
+### `elements`
+
+_type_: `string | Element | NodeList | jQuery<Element>`  
+_default value_: `'.zzload'`
+
+Can be elements or string selector for find elements.
+
+
+
+
+#### `options`
+
+
+
+type: `Object` 
+
+
+
+##### `options.rootMargin`
+
+_default value:_ `'20px 10px'`  
+read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
+
+
+
+
+##### `options.threshold`
+
+_default value:_ `0`  
+read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)
+
+
+
+
+
+##### `options.onLoad(elemen, source): void`
+
+_default value:_ `empty function`  
+Callback executed on fully success loaded source.  
+Has two arguments:
+
+- `element: Element` - current element
+- `source: string` - loaded source url 
+
+example:
+
+```js
+import zzLoad from 'zz-load';
+const observer = zzLoad('.zzload', {
+	onLoad (element, source) {
+		element.classList.add('is-fully-loaded');
+		console.log('Source successfully loaded:\n' + source);
+	}
+})
+```
+
+
+> _Note! zzLoad automatically will add own attribute to elements,_  
+> _for marking them as loaded, even without setting custom `onLoad()` method._   
+> _So you can use this approach for custom styling._  
+> _Read more in [Auto marking elements](#auto-marking-elements) section_
+
+
+
+
+
+
+##### `options.onError(elemen, source): void`
+
+_default value:_ `empty function`  
+Callback executed on error loading source.  
+Has two arguments:
+
+- `element: Element` - current element
+- `source: string` - failed source url 
+
+example:
+
+```js
+import zzLoad from 'zz-load';
+const observer = zzLoad('.zzload', {
+	onError (element, source) {
+		element.classList.add('is-damaged');
+		console.warn('Something went wrong with source:\n' + source);
+	}
+})
+```
+
+
+> _Note! zzLoad automatically will add own attribute to elements,_  
+> _for marking them as failed, even without setting custom `onLoad()` method._   
+> _So you can use this approach for custom styling._  
+> _Read more in [Auto marking elements](#auto-marking-elements) section_
+
+### `observer`
+
+#### `observer.observe()`
+
+##### `observer.triggerLoad(): Promise`
+
+---
+
+## Auto marking elements
+
 

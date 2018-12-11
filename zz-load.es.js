@@ -15,7 +15,7 @@
  * @private
  */
 const _defaultOptions = {
-	rootMargin: '0px',
+	rootMargin: '20px 10px',
 	threshold: 0,
 	onLoad () {},
 	onError () {}
@@ -150,9 +150,7 @@ const _onIntersection = options => (entries, observer) => {
 			/** @type {Element} */
 			let element = entry.target;
 			observer.unobserve(element);
-			if (!_checkIs.processed(element)) {
-				_load(element, options.onLoad, options.onError);
-			}
+			_load(element, options.onLoad, options.onError);
 		}
 	});
 };
@@ -206,6 +204,7 @@ function zzLoad (elements, userOptions) {
 				if (_checkIs.processed(element)) {
 					continue;
 				}
+				_markAs.processed(element);
 				if (observer) {
 					observer.observe(element);
 					continue;
