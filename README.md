@@ -158,10 +158,10 @@ example:
 ```js
 import zzLoad from 'zz-load';
 const observer = zzLoad('.zzload', {
-	onLoad (element, source) {
-		element.classList.add('is-fully-loaded');
-		console.log('Source successfully loaded:\n' + source);
-	}
+    onLoad (element, source) {
+        element.classList.add('is-fully-loaded');
+        console.log('Source successfully loaded:\n' + source);
+    }
 })
 ```
 
@@ -190,10 +190,10 @@ example:
 ```js
 import zzLoad from 'zz-load';
 const observer = zzLoad('.zzload', {
-	onError (element, source) {
-		element.classList.add('is-damaged');
-		console.warn('Something went wrong with source:\n' + source);
-	}
+    onError (element, source) {
+        element.classList.add('is-damaged');
+        console.warn('Something went wrong with source:\n' + source);
+    }
 })
 ```
 
