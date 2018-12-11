@@ -57,10 +57,11 @@ var zzLoad = (function () {
 	    _markAs.processed(element);
 
 	    var img = document.createElement('img');
+	    var ZZloadEvent = window.CustomEvent;
 
 	    img.onload = function () {
 	      var src = img.src;
-	      var loadEvent = new window.CustomEvent('zzload:load', {
+	      var loadEvent = new ZZloadEvent('zzload:load', {
 	        detail: {
 	          element: element,
 	          src: src
@@ -79,7 +80,7 @@ var zzLoad = (function () {
 
 	    img.onerror = function () {
 	      var src = img.src;
-	      var errorEvent = new window.CustomEvent('zzload:error', {
+	      var errorEvent = new ZZloadEvent('zzload:error', {
 	        detail: {
 	          element: element,
 	          src: src

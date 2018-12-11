@@ -51,11 +51,15 @@ const _load = (element, onLoad, onError, asPromise) => {
 	let load = (resolve, reject) => {
 		_markAs.processed(element);
 		let img = document.createElement('img');
+		let ZZloadEvent = window.CustomEvent;
 
 		img.onload = () => {
 			const src = img.src;
-			const loadEvent = new window.CustomEvent('zzload:load', {
-				detail: { element, src }
+			const loadEvent = new ZZloadEvent('zzload:load', {
+				detail: {
+					element,
+					src
+				}
 			});
 			_markAs.loaded(element);
 			element.dispatchEvent(loadEvent);
@@ -67,8 +71,11 @@ const _load = (element, onLoad, onError, asPromise) => {
 
 		img.onerror = () => {
 			const src = img.src;
-			const errorEvent = new window.CustomEvent('zzload:error', {
-				detail: { element, src }
+			const errorEvent = new ZZloadEvent('zzload:error', {
+				detail: {
+					element,
+					src
+				}
 			});
 			_markAs.failed(element);
 			element.dispatchEvent(errorEvent);
