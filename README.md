@@ -28,7 +28,7 @@
 --- 
 
 
-## Install
+# Install
 
 #### NPM
 
