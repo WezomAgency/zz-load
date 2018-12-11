@@ -52,7 +52,7 @@ npm i zz-load
 
 ---
 
-## Simple usage
+# Simple usage
 
 Prepare markup
 
@@ -101,15 +101,15 @@ observer.observe();
 
 ---
 
-### More Examples
+## More Examples
 
 ---
 
-## API
+# API
 
-## `zzLoad([elements][, options]): observer`
+# `zzLoad([elements][, options]): observer`
 
-### `elements`
+## `elements`
 
 _type_: `string | Element | NodeList | jQuery<Element>`  
 _default value_: `'.zzload'`
@@ -119,7 +119,7 @@ Can be elements or string selector for find elements.
 
 
 
-#### `options`
+### `options`
 
 
 
@@ -127,7 +127,7 @@ type: `Object`
 
 
 
-##### `options.rootMargin`
+#### `options.rootMargin`
 
 _default value:_ `'20px 10px'`  
 read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
@@ -135,7 +135,7 @@ read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US
 
 
 
-##### `options.threshold`
+#### `options.threshold`
 
 _default value:_ `0`  
 read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)
@@ -144,7 +144,7 @@ read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US
 
 
 
-##### `options.onLoad(elemen, source): void`
+#### `options.onLoad(elemen, source): void`
 
 _default value:_ `empty function`  
 Callback executed on fully success loaded source.  
@@ -176,7 +176,7 @@ const observer = zzLoad('.zzload', {
 
 
 
-##### `options.onError(elemen, source): void`
+#### `options.onError(elemen, source): void`
 
 _default value:_ `empty function`  
 Callback executed on error loading source.  
@@ -203,14 +203,14 @@ const observer = zzLoad('.zzload', {
 > _So you can use this approach for custom styling._  
 > _Read more in [Auto marking elements](#auto-marking-elements) section_
 
-### `observer`
+## `observer`
 
-#### `observer.observe()`
+### `observer.observe()`
 
-##### `observer.triggerLoad(): Promise`
+#### `observer.triggerLoad(): Promise`
 
 ---
 
-## Auto marking elements
+# Auto marking elements
 
 
