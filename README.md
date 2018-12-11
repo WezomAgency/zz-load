@@ -3,6 +3,7 @@
 [![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/WezomAgency/zz-load/blob/master/LICENSE)
 [![npm](https://img.shields.io/badge/npm-install-orange.svg)](https://www.npmjs.com/package/zz-load)
 [![WezomAgency](https://img.shields.io/badge/wezom-agency-red.svg)](https://github.com/WezomAgency)
+[![Javascript Style Guide](https://img.shields.io/badge/code_style-wezom_relax-red.svg)](https://github.com/WezomAgency/eslint-config-wezom-relax)
 
 > _**Project inspired by [lozad.js](https://github.com/ApoorvSaxena/lozad.js)**_  
 > _**Big thx to [ApoorvSaxena](https://github.com/ApoorvSaxena) and community for their work on `lozad.js`**_  
