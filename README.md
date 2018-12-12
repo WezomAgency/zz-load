@@ -117,9 +117,9 @@ _documentation in progress_
 
 # API
 
-# `zzLoad([elements][, options]): observer`
+## `zzLoad([elements][, options]): observer`
 
-## `elements`
+### `elements`
 
 _type_: `string | Element | NodeList | jQuery<Element>`  
 _default value_: `'.zzload'`
@@ -154,7 +154,7 @@ read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US
 
 
 
-#### `options.onLoad(elemen, source): void`
+#### `options.onLoad(element, source): void`
 
 _default value:_ `empty function`  
 Callback executed on fully success loaded source.  
@@ -186,7 +186,7 @@ const observer = zzLoad('.zzload', {
 
 
 
-#### `options.onError(elemen, source): void`
+#### `options.onError(element, source): void`
 
 _default value:_ `empty function`  
 Callback executed on error loading source.  
@@ -213,11 +213,11 @@ const observer = zzLoad('.zzload', {
 > _So you can use this approach for custom styling._  
 > _Read more in [Auto marking elements](#auto-marking-elements) section_
 
-## `observer`
+### `observer`
 
 _documentation in progress_
 
-### `observer.observe()`
+#### `observer.observe()`
 
 _documentation in progress_
 
