@@ -5,6 +5,10 @@
 [![WezomAgency](https://img.shields.io/badge/wezom-agency-red.svg)](https://github.com/WezomAgency)
 [![Javascript Style Guide](https://img.shields.io/badge/code_style-wezom_relax-red.svg)](https://github.com/WezomAgency/eslint-config-wezom-relax)
 
+### _Status WIP_
+
+---
+
 > _**Project inspired by [lozad.js](https://github.com/ApoorvSaxena/lozad.js)**_  
 > _**Big thx to [ApoorvSaxena](https://github.com/ApoorvSaxena) and community for their work on `lozad.js`**_  
 > _(We also participated a little bit in the development [#80](https://github.com/ApoorvSaxena/lozad.js/pull/80))_
