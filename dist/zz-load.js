@@ -1,4 +1,4 @@
-var zzLoad = (function () {
+(function () {
 	'use strict';
 
 	/**
@@ -57,10 +57,11 @@ var zzLoad = (function () {
 	    _markAs.processed(element);
 
 	    var img = document.createElement('img');
+	    var ZZloadEvent = window.CustomEvent;
 
 	    img.onload = function () {
 	      var src = img.src;
-	      var loadEvent = new window.CustomEvent('zzload:load', {
+	      var loadEvent = new ZZloadEvent('zzload:load', {
 	        detail: {
 	          element: element,
 	          src: src
@@ -79,7 +80,7 @@ var zzLoad = (function () {
 
 	    img.onerror = function () {
 	      var src = img.src;
-	      var errorEvent = new window.CustomEvent('zzload:error', {
+	      var errorEvent = new ZZloadEvent('zzload:error', {
 	        detail: {
 	          element: element,
 	          src: src
@@ -96,7 +97,7 @@ var zzLoad = (function () {
 	      }
 	    };
 
-	    var dataImg = element.getAttribute('data-zzload-img');
+	    var dataImg = element.getAttribute('data-zzload-source-img');
 
 	    if (dataImg) {
 	      img.src = dataImg;
@@ -104,13 +105,16 @@ var zzLoad = (function () {
 	      return null;
 	    }
 
-	    var dataBgImg = element.getAttribute('data-zzload-background-img');
+	    var dataBgImg = element.getAttribute('data-zzload-source-background-img');
 
 	    if (dataBgImg) {
 	      img.src = dataBgImg;
 	      element.style.backgroundImage = "url(".concat(dataBgImg, ")");
 	      return null;
 	    }
+
+	    console.log(element);
+	    console.log('▲ element has no zz-load source');
 	  };
 
 	  if (asPromise && window.Promise) {
@@ -128,14 +132,17 @@ var zzLoad = (function () {
 
 
 	var _markAs = {
+	  observed: function observed(element) {
+	    element.setAttribute('data-zzload-is-observed', '');
+	  },
 	  processed: function processed(element) {
-	    element.setAttribute('data-zzload-processed', true);
+	    element.setAttribute('data-zzload-is-processed', '');
 	  },
 	  loaded: function loaded(element) {
-	    element.setAttribute('data-zzload-loaded', true);
+	    element.setAttribute('data-zzload-is-loaded', '');
 	  },
 	  failed: function failed(element) {
-	    element.setAttribute('data-zzload-failed', true);
+	    element.setAttribute('data-zzload-is-failed', '');
 	  }
 	};
 	/**
@@ -143,14 +150,17 @@ var zzLoad = (function () {
 	 */
 
 	var _checkIs = {
+	  observed: function observed(element) {
+	    return element.hasAttribute('data-zzload-is-observed');
+	  },
 	  processed: function processed(element) {
-	    return element.getAttribute('data-zzload-processed') === 'true';
+	    return element.hasAttribute('data-zzload-is-processed');
 	  },
 	  loaded: function loaded(element) {
-	    return element.getAttribute('data-zzload-loaded') === 'true';
+	    return element.hasAttribute('data-zzload-is-loaded');
 	  },
 	  failed: function failed(element) {
-	    return element.getAttribute('data-zzload-failed') === 'true';
+	    return element.hasAttribute('data-zzload-is-failed');
 	  }
 	};
 	/**
@@ -167,9 +177,7 @@ var zzLoad = (function () {
 	        var element = entry.target;
 	        observer.unobserve(element);
 
-	        if (!_checkIs.processed(element)) {
-	          _load(element, options.onLoad, options.onError);
-	        }
+	        _load(element, options.onLoad, options.onError);
 	      }
 	    });
 	  };
@@ -204,9 +212,9 @@ var zzLoad = (function () {
 	// ----------------------------------------
 
 	/**
-	 * @param {string|Element|NodeList|jQuery} [elements=".zz-load"]
-	 * @param {Object} [userOptions={}]
-	 * @return {{observe(): void, triggerLoad(): void}}
+	 * @param elements
+	 * @param userOptions
+	 * @return {*}
 	 */
 
 
@@ -229,9 +237,11 @@ var zzLoad = (function () {
 	      for (var i = 0; i < list.length; i++) {
 	        var element = list[i];
 
-	        if (_checkIs.processed(element)) {
+	        if (_checkIs.observed(element)) {
 	          continue;
 	        }
+
+	        _markAs.observed(element);
 
 	        if (observer) {
 	          observer.observe(element);
@@ -246,11 +256,16 @@ var zzLoad = (function () {
 	        return;
 	      }
 
+	      _markAs.observed(element);
+
 	      return _load(element, options.onLoad, options.onError, true);
 	    }
 	  };
 	} // ----------------------------------------
+	// Exports
+	// ----------------------------------------
 
-	return zzLoad;
+
+	window.zzLoad = zzLoad; // export default zzLoad;
 
 }());

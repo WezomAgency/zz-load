@@ -1,2 +1,4 @@
-.eslintrc.json
-rollup.config.js
+/.eslintrc.json
+/rollup.config.js
+/docs/
+/examples/

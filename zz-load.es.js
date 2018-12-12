@@ -51,11 +51,15 @@ const _load = (element, onLoad, onError, asPromise) => {
 	let load = (resolve, reject) => {
 		_markAs.processed(element);
 		let img = document.createElement('img');
+		let ZZloadEvent = window.CustomEvent;
 
 		img.onload = () => {
 			const src = img.src;
-			const loadEvent = new window.CustomEvent('zzload:load', {
-				detail: { element, src }
+			const loadEvent = new ZZloadEvent('zzload:load', {
+				detail: {
+					element,
+					src
+				}
 			});
 			_markAs.loaded(element);
 			element.dispatchEvent(loadEvent);
@@ -67,8 +71,11 @@ const _load = (element, onLoad, onError, asPromise) => {
 
 		img.onerror = () => {
 			const src = img.src;
-			const errorEvent = new window.CustomEvent('zzload:error', {
-				detail: { element, src }
+			const errorEvent = new ZZloadEvent('zzload:error', {
+				detail: {
+					element,
+					src
+				}
 			});
 			_markAs.failed(element);
 			element.dispatchEvent(errorEvent);
@@ -78,19 +85,22 @@ const _load = (element, onLoad, onError, asPromise) => {
 			}
 		};
 
-		let dataImg = element.getAttribute('data-zzload-img');
+		let dataImg = element.getAttribute('data-zzload-source-img');
 		if (dataImg) {
 			img.src = dataImg;
 			element.src = dataImg;
 			return null;
 		}
 
-		let dataBgImg = element.getAttribute('data-zzload-background-img');
+		let dataBgImg = element.getAttribute('data-zzload-source-background-img');
 		if (dataBgImg) {
 			img.src = dataBgImg;
 			element.style.backgroundImage = `url(${dataBgImg})`;
 			return null;
 		}
+
+		console.log(element);
+		console.log('▲ element has no zz-load source');
 	};
 
 	if (asPromise && window.Promise) {
@@ -106,14 +116,17 @@ const _load = (element, onLoad, onError, asPromise) => {
  * @private
  */
 const _markAs = {
+	observed (element) {
+		element.setAttribute('data-zzload-is-observed', '');
+	},
 	processed (element) {
-		element.setAttribute('data-zzload-processed', true);
+		element.setAttribute('data-zzload-is-processed', '');
 	},
 	loaded (element) {
-		element.setAttribute('data-zzload-loaded', true);
+		element.setAttribute('data-zzload-is-loaded', '');
 	},
 	failed (element) {
-		element.setAttribute('data-zzload-failed', true);
+		element.setAttribute('data-zzload-is-failed', '');
 	}
 };
 
@@ -121,14 +134,17 @@ const _markAs = {
  * @private
  */
 const _checkIs = {
+	observed (element) {
+		return element.hasAttribute('data-zzload-is-observed');
+	},
 	processed (element) {
-		return element.getAttribute('data-zzload-processed') === 'true';
+		return element.hasAttribute('data-zzload-is-processed');
 	},
 	loaded (element) {
-		return element.getAttribute('data-zzload-loaded') === 'true';
+		return element.hasAttribute('data-zzload-is-loaded');
 	},
 	failed (element) {
-		return element.getAttribute('data-zzload-failed') === 'true';
+		return element.hasAttribute('data-zzload-is-failed');
 	}
 };
 
@@ -143,9 +159,7 @@ const _onIntersection = options => (entries, observer) => {
 			/** @type {Element} */
 			let element = entry.target;
 			observer.unobserve(element);
-			if (!_checkIs.processed(element)) {
-				_load(element, options.onLoad, options.onError);
-			}
+			_load(element, options.onLoad, options.onError);
 		}
 	});
 };
@@ -176,9 +190,9 @@ const _getElements = (element) => {
 // ----------------------------------------
 
 /**
- * @param {string|Element|NodeList|jQuery} [elements=".zz-load"]
- * @param {Object} [userOptions={}]
- * @return {{observe(): void, triggerLoad(): void}}
+ * @param elements
+ * @param userOptions
+ * @return {*}
  */
 function zzLoad (elements, userOptions) {
 	let options = _extend(userOptions);
@@ -196,9 +210,10 @@ function zzLoad (elements, userOptions) {
 			let list = _getElements(elements);
 			for (let i = 0; i < list.length; i++) {
 				let element = list[i];
-				if (_checkIs.processed(element)) {
+				if (_checkIs.observed(element)) {
 					continue;
 				}
+				_markAs.observed(element);
 				if (observer) {
 					observer.observe(element);
 					continue;
@@ -210,6 +225,7 @@ function zzLoad (elements, userOptions) {
 			if (_checkIs.processed(element)) {
 				return;
 			}
+			_markAs.observed(element);
 			return _load(element, options.onLoad, options.onError, true);
 		}
 	};
@@ -219,4 +235,5 @@ function zzLoad (elements, userOptions) {
 // Exports
 // ----------------------------------------
 
-export default zzLoad;
+window.zzLoad = zzLoad;
+// export default zzLoad;
