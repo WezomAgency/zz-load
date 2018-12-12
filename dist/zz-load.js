@@ -1,4 +1,4 @@
-var zzLoad = (function () {
+(function () {
 	'use strict';
 
 	/**
@@ -112,6 +112,9 @@ var zzLoad = (function () {
 	      element.style.backgroundImage = "url(".concat(dataBgImg, ")");
 	      return null;
 	    }
+
+	    console.log(element);
+	    console.log('▲ element has no zz-load source');
 	  };
 
 	  if (asPromise && window.Promise) {
@@ -129,14 +132,17 @@ var zzLoad = (function () {
 
 
 	var _markAs = {
+	  observed: function observed(element) {
+	    element.setAttribute('data-zzload-is-observed', '');
+	  },
 	  processed: function processed(element) {
-	    element.setAttribute('data-zzload-is-processed', true);
+	    element.setAttribute('data-zzload-is-processed', '');
 	  },
 	  loaded: function loaded(element) {
-	    element.setAttribute('data-zzload-is-loaded', true);
+	    element.setAttribute('data-zzload-is-loaded', '');
 	  },
 	  failed: function failed(element) {
-	    element.setAttribute('data-zzload-is-failed', true);
+	    element.setAttribute('data-zzload-is-failed', '');
 	  }
 	};
 	/**
@@ -144,14 +150,17 @@ var zzLoad = (function () {
 	 */
 
 	var _checkIs = {
+	  observed: function observed(element) {
+	    return element.hasAttribute('data-zzload-is-observed');
+	  },
 	  processed: function processed(element) {
-	    return element.getAttribute('data-zzload-is-processed') === 'true';
+	    return element.hasAttribute('data-zzload-is-processed');
 	  },
 	  loaded: function loaded(element) {
-	    return element.getAttribute('data-zzload-is-loaded') === 'true';
+	    return element.hasAttribute('data-zzload-is-loaded');
 	  },
 	  failed: function failed(element) {
-	    return element.getAttribute('data-zzload-is-failed') === 'true';
+	    return element.hasAttribute('data-zzload-is-failed');
 	  }
 	};
 	/**
@@ -168,9 +177,7 @@ var zzLoad = (function () {
 	        var element = entry.target;
 	        observer.unobserve(element);
 
-	        if (!_checkIs.processed(element)) {
-	          _load(element, options.onLoad, options.onError);
-	        }
+	        _load(element, options.onLoad, options.onError);
 	      }
 	    });
 	  };
@@ -230,9 +237,11 @@ var zzLoad = (function () {
 	      for (var i = 0; i < list.length; i++) {
 	        var element = list[i];
 
-	        if (_checkIs.processed(element)) {
+	        if (_checkIs.observed(element)) {
 	          continue;
 	        }
+
+	        _markAs.observed(element);
 
 	        if (observer) {
 	          observer.observe(element);
@@ -247,11 +256,16 @@ var zzLoad = (function () {
 	        return;
 	      }
 
+	      _markAs.observed(element);
+
 	      return _load(element, options.onLoad, options.onError, true);
 	    }
 	  };
 	} // ----------------------------------------
+	// Exports
+	// ----------------------------------------
 
-	return zzLoad;
+
+	window.zzLoad = zzLoad; // export default zzLoad;
 
 }());

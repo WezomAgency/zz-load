@@ -25,6 +25,10 @@
 | `triggerLoad()` method return Promise _(if supports)_  | _No_      | _**Yes**_ |
 
 
+## Live preview
+
+[https://WezomAgency.github.io/zz-load/examples/](https://wezomagency.github.io/zz-load/examples/index.html)
+
 --- 
 
 
@@ -103,6 +107,8 @@ observer.observe();
 
 ## More Examples
 
+_documentation in progress_
+
 ---
 
 # API
@@ -129,7 +135,7 @@ type: `Object`
 
 #### `options.rootMargin`
 
-_default value:_ `'20px 10px'`  
+_default value:_ `'0px'`  
 read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
 
 
@@ -205,12 +211,20 @@ const observer = zzLoad('.zzload', {
 
 ## `observer`
 
+_documentation in progress_
+
 ### `observer.observe()`
 
+_documentation in progress_
+
 #### `observer.triggerLoad(): Promise`
+
+_documentation in progress_
 
 ---
 
 # Auto marking elements
+
+_documentation in progress_
 
 
