@@ -1,4 +1,4 @@
-(function () {
+var zzLoad = (function () {
 	'use strict';
 
 	/**
@@ -57,39 +57,24 @@
 	    _markAs.processed(element);
 
 	    var img = document.createElement('img');
-	    var ZZloadEvent = window.CustomEvent;
 
 	    img.onload = function () {
 	      var src = img.src;
-	      var loadEvent = new ZZloadEvent('zzload:load', {
-	        detail: {
-	          element: element,
-	          src: src
-	        }
-	      });
 
-	      _markAs.loaded(element);
+	      _markAs.loaded(element, src);
 
-	      element.dispatchEvent(loadEvent);
-	      onLoad(element, img.src);
+	      onLoad(element, src);
 
 	      if (resolve) {
-	        resolve(element, img.src);
+	        resolve(element, src);
 	      }
 	    };
 
 	    img.onerror = function () {
 	      var src = img.src;
-	      var errorEvent = new ZZloadEvent('zzload:error', {
-	        detail: {
-	          element: element,
-	          src: src
-	        }
-	      });
 
-	      _markAs.failed(element);
+	      _markAs.failed(element, src);
 
-	      element.dispatchEvent(errorEvent);
 	      onError(element, src);
 
 	      if (reject) {
@@ -127,6 +112,20 @@
 	  return null;
 	};
 	/**
+	 * @param {string} name
+	 * @param {Object} [detail={}]
+	 * @return {CustomEvent}
+	 * @private
+	 */
+
+
+	var _createEvent = function _createEvent(name) {
+	  var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	  return new window.CustomEvent("zzload:".concat(name), {
+	    detail: detail
+	  });
+	};
+	/**
 	 * @private
 	 */
 
@@ -134,15 +133,29 @@
 	var _markAs = {
 	  observed: function observed(element) {
 	    element.setAttribute('data-zzload-is-observed', '');
+	    element.dispatchEvent(_createEvent('observed', {
+	      element: element
+	    }));
 	  },
 	  processed: function processed(element) {
 	    element.setAttribute('data-zzload-is-processed', '');
+	    element.dispatchEvent(_createEvent('processed', {
+	      element: element
+	    }));
 	  },
-	  loaded: function loaded(element) {
+	  loaded: function loaded(element, source) {
 	    element.setAttribute('data-zzload-is-loaded', '');
+	    element.dispatchEvent(_createEvent('loaded', {
+	      element: element,
+	      source: source
+	    }));
 	  },
-	  failed: function failed(element) {
+	  failed: function failed(element, source) {
 	    element.setAttribute('data-zzload-is-failed', '');
+	    element.dispatchEvent(_createEvent('failed', {
+	      element: element,
+	      source: source
+	    }));
 	  }
 	};
 	/**
@@ -262,10 +275,7 @@
 	    }
 	  };
 	} // ----------------------------------------
-	// Exports
-	// ----------------------------------------
 
-
-	window.zzLoad = zzLoad; // export default zzLoad;
+	return zzLoad;
 
 }());

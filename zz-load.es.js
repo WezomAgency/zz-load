@@ -51,34 +51,19 @@ const _load = (element, onLoad, onError, asPromise) => {
 	let load = (resolve, reject) => {
 		_markAs.processed(element);
 		let img = document.createElement('img');
-		let ZZloadEvent = window.CustomEvent;
 
 		img.onload = () => {
 			const src = img.src;
-			const loadEvent = new ZZloadEvent('zzload:load', {
-				detail: {
-					element,
-					src
-				}
-			});
-			_markAs.loaded(element);
-			element.dispatchEvent(loadEvent);
-			onLoad(element, img.src);
+			_markAs.loaded(element, src);
+			onLoad(element, src);
 			if (resolve) {
-				resolve(element, img.src);
+				resolve(element, src);
 			}
 		};
 
 		img.onerror = () => {
 			const src = img.src;
-			const errorEvent = new ZZloadEvent('zzload:error', {
-				detail: {
-					element,
-					src
-				}
-			});
-			_markAs.failed(element);
-			element.dispatchEvent(errorEvent);
+			_markAs.failed(element, src);
 			onError(element, src);
 			if (reject) {
 				reject(element, src);
@@ -113,20 +98,34 @@ const _load = (element, onLoad, onError, asPromise) => {
 };
 
 /**
+ * @param {string} name
+ * @param {Object} [detail={}]
+ * @return {CustomEvent}
+ * @private
+ */
+const _createEvent = (name, detail = {}) => {
+	return new window.CustomEvent(`zzload:${name}`, { detail });
+};
+
+/**
  * @private
  */
 const _markAs = {
 	observed (element) {
 		element.setAttribute('data-zzload-is-observed', '');
+		element.dispatchEvent(_createEvent('observed', { element }));
 	},
 	processed (element) {
 		element.setAttribute('data-zzload-is-processed', '');
+		element.dispatchEvent(_createEvent('processed', { element }));
 	},
-	loaded (element) {
+	loaded (element, source) {
 		element.setAttribute('data-zzload-is-loaded', '');
+		element.dispatchEvent(_createEvent('loaded', { element, source }));
 	},
-	failed (element) {
+	failed (element, source) {
 		element.setAttribute('data-zzload-is-failed', '');
+		element.dispatchEvent(_createEvent('failed', { element, source }));
 	}
 };
 
@@ -235,5 +234,4 @@ function zzLoad (elements, userOptions) {
 // Exports
 // ----------------------------------------
 
-window.zzLoad = zzLoad;
-// export default zzLoad;
+export default zzLoad;
