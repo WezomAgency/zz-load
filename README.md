@@ -117,9 +117,9 @@ _documentation in progress_
 
 # API
 
-## `zzLoad([elements][, options]): observer`
+### `zzLoad([elements][, options]): observer`
 
-### `elements`
+#### `elements`
 
 _type_: `string | Element | NodeList | jQuery<Element>`  
 _default value_: `'.zzload'`
@@ -129,15 +129,11 @@ Can be elements or string selector for find elements.
 
 
 
-### `options`
+#### `options`
 
+_type:_ `Object`
 
-
-type: `Object` 
-
-
-
-#### `options.rootMargin`
+##### `options.rootMargin`
 
 _default value:_ `'0px'`  
 read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
@@ -145,7 +141,7 @@ read more: [IntersectionObserver.rootMargin](https://developer.mozilla.org/en-US
 
 
 
-#### `options.threshold`
+##### `options.threshold`
 
 _default value:_ `0`  
 read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)
@@ -154,7 +150,7 @@ read more: [IntersectionObserver.thresholds](https://developer.mozilla.org/en-US
 
 
 
-#### `options.onLoad(element, source): void`
+##### `options.onLoad(element, source): void`
 
 _default value:_ `empty function`  
 Callback executed on fully success loaded source.  
@@ -186,7 +182,7 @@ const observer = zzLoad('.zzload', {
 
 
 
-#### `options.onError(element, source): void`
+##### `options.onError(element, source): void`
 
 _default value:_ `empty function`  
 Callback executed on error loading source.  
