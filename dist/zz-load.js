@@ -82,20 +82,32 @@ var zzLoad = (function () {
 	      }
 	    };
 
-	    var dataImg = element.getAttribute('data-zzload-source-img');
+	    var source = element.getAttribute('data-zzload-source-img');
 
-	    if (dataImg) {
-	      img.src = dataImg;
-	      element.src = dataImg;
+	    if (source) {
+	      img.src = source;
+	      element.src = source;
 	      return null;
 	    }
 
-	    var dataBgImg = element.getAttribute('data-zzload-source-background-img');
+	    source = element.getAttribute('data-zzload-source-background-img');
 
-	    if (dataBgImg) {
-	      img.src = dataBgImg;
-	      element.style.backgroundImage = "url(".concat(dataBgImg, ")");
+	    if (source) {
+	      img.src = source;
+	      element.style.backgroundImage = "url(".concat(source, ")");
 	      return null;
+	    }
+
+	    source = element.getAttribute('data-zzload-source-image');
+
+	    if (source) {
+	      var image = element.querySelector('image');
+
+	      if (image instanceof window.SVGImageElement) {
+	        img.src = source;
+	        image.setAttribute('href', source);
+	        return null;
+	      }
 	    }
 
 	    console.log(element);
