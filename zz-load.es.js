@@ -52,24 +52,28 @@ const _load = (element, onLoad, onError, asPromise) => {
 		_markAs.processed(element);
 		let img = document.createElement('img');
 
-		img.onload = () => {
-			const src = img.src;
+		function onload () {
+			const src = this.src;
 			_markAs.loaded(element, src);
 			onLoad(element, src);
 			if (resolve) {
 				resolve(element, src);
 			}
-		};
+		}
 
-		img.onerror = () => {
-			const src = img.src;
+		function onerror () {
+			const src = this.src;
 			_markAs.failed(element, src);
 			onError(element, src);
 			if (reject) {
 				reject(element, src);
 			}
-		};
+		}
 
+		img.onload = onload;
+		img.onerror = onerror;
+
+		// img
 		let source = element.getAttribute('data-zzload-source-img');
 		if (source) {
 			img.src = source;
@@ -77,6 +81,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 			return null;
 		}
 
+		// style="background-image: url(...)"
 		source = element.getAttribute('data-zzload-source-background-img');
 		if (source) {
 			img.src = source;
@@ -84,6 +89,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 			return null;
 		}
 
+		// SVG image
 		source = element.getAttribute('data-zzload-source-image');
 		if (source) {
 			let image = element.querySelector('image');
@@ -92,6 +98,15 @@ const _load = (element, onLoad, onError, asPromise) => {
 				image.setAttribute('href', source);
 				return null;
 			}
+		}
+
+		// iframe
+		source = element.getAttribute('data-zzload-source-iframe');
+		if (source) {
+			element.onload = onload;
+			element.onerror = onerror;
+			element.src = source;
+			return null;
 		}
 
 		console.log(element);

@@ -22,12 +22,13 @@
 | No dependencies                             | _**Yes**_ | _**Yes**_ |
 | Transpiled ES5 + `.min`                     | _**Yes**_ | _**Yes**_ |
 | IntersectionObserver                        | _**Yes**_ | _**Yes**_ |
+| Supports `iframe` elements                  | _**Yes**_ | _**Yes**_ |
 | Custom `load()` method                      | _**Yes**_ | _No_      |
+| Use with SVG `<image>` element              | _No_      | _**Yes**_ |
 | Callback on fully loaded source             | _No_      | _**Yes**_ |
 | Callback on error loading source            | _No_      | _**Yes**_ |
 | Dispatch events `onload` and `onerror`      | _No_      | _**Yes**_ |
 | `triggerLoad()` method return Promise       | _No_      | _**Yes**_ |
-| Use with SVG `<image>` element              | _No_      | _**Yes**_ |
 
 
 ## Live preview

@@ -58,8 +58,8 @@ var zzLoad = (function () {
 
 	    var img = document.createElement('img');
 
-	    img.onload = function () {
-	      var src = img.src;
+	    function onload() {
+	      var src = this.src;
 
 	      _markAs.loaded(element, src);
 
@@ -68,10 +68,10 @@ var zzLoad = (function () {
 	      if (resolve) {
 	        resolve(element, src);
 	      }
-	    };
+	    }
 
-	    img.onerror = function () {
-	      var src = img.src;
+	    function onerror() {
+	      var src = this.src;
 
 	      _markAs.failed(element, src);
 
@@ -80,7 +80,10 @@ var zzLoad = (function () {
 	      if (reject) {
 	        reject(element, src);
 	      }
-	    };
+	    }
+
+	    img.onload = onload;
+	    img.onerror = onerror; // img
 
 	    var source = element.getAttribute('data-zzload-source-img');
 
@@ -88,7 +91,8 @@ var zzLoad = (function () {
 	      img.src = source;
 	      element.src = source;
 	      return null;
-	    }
+	    } // style="background-image: url(...)"
+
 
 	    source = element.getAttribute('data-zzload-source-background-img');
 
@@ -96,7 +100,8 @@ var zzLoad = (function () {
 	      img.src = source;
 	      element.style.backgroundImage = "url(".concat(source, ")");
 	      return null;
-	    }
+	    } // SVG image
+
 
 	    source = element.getAttribute('data-zzload-source-image');
 
@@ -108,6 +113,16 @@ var zzLoad = (function () {
 	        image.setAttribute('href', source);
 	        return null;
 	      }
+	    } // iframe
+
+
+	    source = element.getAttribute('data-zzload-source-iframe');
+
+	    if (source) {
+	      element.onload = onload;
+	      element.onerror = onerror;
+	      element.src = source;
+	      return null;
 	    }
 
 	    console.log(element);
