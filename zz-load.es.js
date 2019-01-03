@@ -70,18 +70,28 @@ const _load = (element, onLoad, onError, asPromise) => {
 			}
 		};
 
-		let dataImg = element.getAttribute('data-zzload-source-img');
-		if (dataImg) {
-			img.src = dataImg;
-			element.src = dataImg;
+		let source = element.getAttribute('data-zzload-source-img');
+		if (source) {
+			img.src = source;
+			element.src = source;
 			return null;
 		}
 
-		let dataBgImg = element.getAttribute('data-zzload-source-background-img');
-		if (dataBgImg) {
-			img.src = dataBgImg;
-			element.style.backgroundImage = `url(${dataBgImg})`;
+		source = element.getAttribute('data-zzload-source-background-img');
+		if (source) {
+			img.src = source;
+			element.style.backgroundImage = `url(${source})`;
 			return null;
+		}
+
+		source = element.getAttribute('data-zzload-source-image');
+		if (source) {
+			let image = element.querySelector('image');
+			if (image instanceof window.SVGImageElement) {
+				img.src = source;
+				image.setAttribute('href', source);
+				return null;
+			}
 		}
 
 		console.log(element);
