@@ -123,6 +123,19 @@ var zzLoad = (function () {
 	      element.onerror = onerror;
 	      element.src = source;
 	      return null;
+	    } // container
+
+
+	    if (element.hasAttribute('data-zzload-container')) {
+	      _markAs.loaded(element);
+
+	      onLoad(element);
+
+	      if (resolve) {
+	        resolve(element);
+	      }
+
+	      return null;
 	    }
 
 	    console.log(element);
