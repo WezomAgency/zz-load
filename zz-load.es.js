@@ -109,6 +109,16 @@ const _load = (element, onLoad, onError, asPromise) => {
 			return null;
 		}
 
+		// container
+		if (element.hasAttribute('data-zzload-container')) {
+			_markAs.loaded(element);
+			onLoad(element);
+			if (resolve) {
+				resolve(element);
+			}
+			return null;
+		}
+
 		console.log(element);
 		console.log('▲ element has no zz-load source');
 	};
