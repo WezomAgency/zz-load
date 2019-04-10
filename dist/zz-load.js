@@ -38,6 +38,24 @@ var zzLoad = (function () {
 	  return options;
 	};
 	/**
+	 * @private
+	 */
+
+
+	var _attrs = {
+	  isObserved: 'data-zzload-is-observed',
+	  isProcessed: 'data-zzload-is-processed',
+	  isLoaded: 'data-zzload-is-loaded',
+	  isFailed: 'data-zzload-is-failed',
+	  isInView: 'data-zzload-is-inview',
+	  sourceImg: 'data-zzload-source-img',
+	  sourceBgImg: 'data-zzload-source-background-img',
+	  sourceImage: 'data-zzload-source-image',
+	  sourceIframe: 'data-zzload-source-iframe',
+	  sourceContainer: 'data-zzload-container',
+	  sourceInview: 'data-zzload-inview'
+	};
+	/**
 	 * @param {Element} element
 	 * @param {Function} onLoad
 	 * @param {Function} onError
@@ -45,7 +63,6 @@ var zzLoad = (function () {
 	 * @return {null|Promise}
 	 * @private
 	 */
-
 
 	var _load = function _load(element, onLoad, onError, asPromise) {
 	  /**
@@ -85,7 +102,7 @@ var zzLoad = (function () {
 	    img.onload = onload;
 	    img.onerror = onerror; // img
 
-	    var source = element.getAttribute('data-zzload-source-img');
+	    var source = element.getAttribute(_attrs.sourceImg);
 
 	    if (source) {
 	      img.src = source;
@@ -94,7 +111,7 @@ var zzLoad = (function () {
 	    } // style="background-image: url(...)"
 
 
-	    source = element.getAttribute('data-zzload-source-background-img');
+	    source = element.getAttribute(_attrs.sourceBgImg);
 
 	    if (source) {
 	      img.src = source;
@@ -103,7 +120,7 @@ var zzLoad = (function () {
 	    } // SVG image
 
 
-	    source = element.getAttribute('data-zzload-source-image');
+	    source = element.getAttribute(_attrs.sourceImage);
 
 	    if (source) {
 	      var image = element.querySelector('image');
@@ -116,7 +133,7 @@ var zzLoad = (function () {
 	    } // iframe
 
 
-	    source = element.getAttribute('data-zzload-source-iframe');
+	    source = element.getAttribute(_attrs.sourceIframe);
 
 	    if (source) {
 	      element.onload = onload;
@@ -126,7 +143,7 @@ var zzLoad = (function () {
 	    } // container
 
 
-	    if (element.hasAttribute('data-zzload-container')) {
+	    if (element.hasAttribute(_attrs.sourceContainer)) {
 	      _markAs.loaded(element);
 
 	      onLoad(element);
@@ -172,27 +189,41 @@ var zzLoad = (function () {
 
 	var _markAs = {
 	  observed: function observed(element) {
-	    element.setAttribute('data-zzload-is-observed', '');
+	    element.setAttribute(_attrs.isObserved, '');
 	    element.dispatchEvent(_createEvent('observed', {
 	      element: element
 	    }));
 	  },
 	  processed: function processed(element) {
-	    element.setAttribute('data-zzload-is-processed', '');
+	    element.setAttribute(_attrs.isProcessed, '');
 	    element.dispatchEvent(_createEvent('processed', {
 	      element: element
 	    }));
 	  },
 	  loaded: function loaded(element, source) {
-	    element.setAttribute('data-zzload-is-loaded', '');
+	    element.setAttribute(_attrs.isLoaded, '');
 	    element.dispatchEvent(_createEvent('loaded', {
 	      element: element,
 	      source: source
 	    }));
 	  },
 	  failed: function failed(element, source) {
-	    element.setAttribute('data-zzload-is-failed', '');
+	    element.setAttribute(_attrs.isFailed, '');
 	    element.dispatchEvent(_createEvent('failed', {
+	      element: element,
+	      source: source
+	    }));
+	  },
+	  inView: function inView(element, source) {
+	    element.setAttribute(_attrs.isInView, '');
+	    element.dispatchEvent(_createEvent('inView', {
+	      element: element,
+	      source: source
+	    }));
+	  },
+	  outOfView: function outOfView(element, source) {
+	    element.removeAttribute(_attrs.isInView, '');
+	    element.dispatchEvent(_createEvent('outOfView', {
 	      element: element,
 	      source: source
 	    }));
@@ -204,16 +235,19 @@ var zzLoad = (function () {
 
 	var _checkIs = {
 	  observed: function observed(element) {
-	    return element.hasAttribute('data-zzload-is-observed');
+	    return element.hasAttribute(_attrs.isObserved);
 	  },
 	  processed: function processed(element) {
-	    return element.hasAttribute('data-zzload-is-processed');
+	    return element.hasAttribute(_attrs.isProcessed);
 	  },
 	  loaded: function loaded(element) {
-	    return element.hasAttribute('data-zzload-is-loaded');
+	    return element.hasAttribute(_attrs.isLoaded);
 	  },
 	  failed: function failed(element) {
-	    return element.hasAttribute('data-zzload-is-failed');
+	    return element.hasAttribute(_attrs.isFailed);
+	  },
+	  inView: function inView(element) {
+	    return element.hasAttribute(_attrs.isInView);
 	  }
 	};
 	/**
@@ -225,12 +259,22 @@ var zzLoad = (function () {
 	var _onIntersection = function _onIntersection(options) {
 	  return function (entries, observer) {
 	    entries.forEach(function (entry) {
-	      if (entry.intersectionRatio > 0 || entry.isIntersecting) {
-	        /** @type {Element} */
-	        var element = entry.target;
-	        observer.unobserve(element);
+	      /** @type {Element} */
+	      var element = entry.target;
+	      var inViewType = element.hasAttribute(_attrs.sourceInview);
 
-	        _load(element, options.onLoad, options.onError);
+	      if (entry.intersectionRatio > 0 || entry.isIntersecting) {
+	        if (inViewType) {
+	          _markAs.inView(element, null);
+	        } else {
+	          observer.unobserve(element);
+
+	          _load(element, options.onLoad, options.onError);
+	        }
+	      } else {
+	        if (inViewType && _checkIs.inView(element)) {
+	          _markAs.outOfView(element, null);
+	        }
 	      }
 	    });
 	  };
