@@ -7,6 +7,12 @@
  */
 
 // ----------------------------------------
+// Imports
+// ----------------------------------------
+
+import { attrs, events } from './data';
+
+// ----------------------------------------
 // Private
 // ----------------------------------------
 
@@ -17,6 +23,8 @@
 const _defaultOptions = {
 	rootMargin: '0px',
 	threshold: 0,
+	clearAttrs: true,
+	setSourceOnLoad: true,
 	onLoad () {},
 	onError () {}
 };
@@ -35,34 +43,16 @@ const _extend = (userOptions = {}) => {
 };
 
 /**
- * @private
- */
-const _attrs = {
-	isObserved: 'data-zzload-is-observed',
-	isProcessed: 'data-zzload-is-processed',
-	isLoaded: 'data-zzload-is-loaded',
-	isFailed: 'data-zzload-is-failed',
-	isInView: 'data-zzload-is-inview',
-	sourceImg: 'data-zzload-source-img',
-	sourceSrcSet: 'data-zzload-source-srcset',
-	sourceBgImg: 'data-zzload-source-background-img',
-	sourceImage: 'data-zzload-source-image',
-	sourceIframe: 'data-zzload-source-iframe',
-	sourceContainer: 'data-zzload-container',
-	sourceInview: 'data-zzload-inview'
-};
-
-/**
  * @param {HTMLElement} element
  * @private
  */
 const _sanitaze = element => {
-	element.removeAttribute(_attrs.sourceImg);
-	element.removeAttribute(_attrs.sourceSrcSet);
-	element.removeAttribute(_attrs.sourceBgImg);
-	element.removeAttribute(_attrs.sourceImage);
-	element.removeAttribute(_attrs.sourceIframe);
-	element.removeAttribute(_attrs.sourceContainer);
+	element.removeAttribute(attrs.sourceImg);
+	element.removeAttribute(attrs.sourceSrcSet);
+	element.removeAttribute(attrs.sourceBgImg);
+	element.removeAttribute(attrs.sourceImage);
+	element.removeAttribute(attrs.sourceIframe);
+	element.removeAttribute(attrs.sourceContainer);
 };
 
 /**
@@ -109,9 +99,9 @@ const _load = (element, onLoad, onError, asPromise) => {
 		img.onerror = onerror;
 
 		// img
-		let source = element.getAttribute(_attrs.sourceImg);
+		let source = element.getAttribute(attrs.sourceImg);
 		if (source) {
-			let srcset = element.getAttribute(_attrs.sourceSrcSet);
+			let srcset = element.getAttribute(attrs.sourceSrcSet);
 			if (srcset) {
 				img.srcset = srcset;
 				element.srcset = srcset;
@@ -122,7 +112,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 		}
 
 		// style="background-image: url(...)"
-		source = element.getAttribute(_attrs.sourceBgImg);
+		source = element.getAttribute(attrs.sourceBgImg);
 		if (source) {
 			img.src = source;
 			element.style.backgroundImage = `url(${source})`;
@@ -130,7 +120,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 		}
 
 		// SVG image
-		source = element.getAttribute(_attrs.sourceImage);
+		source = element.getAttribute(attrs.sourceImage);
 		if (source) {
 			let image = element.querySelector('image');
 			if (image instanceof window.SVGImageElement) {
@@ -141,7 +131,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 		}
 
 		// iframe
-		source = element.getAttribute(_attrs.sourceIframe);
+		source = element.getAttribute(attrs.sourceIframe);
 		if (source) {
 			element.onload = onload;
 			element.onerror = onerror;
@@ -163,8 +153,8 @@ const _load = (element, onLoad, onError, asPromise) => {
 					const isImg = child.nodeName.toLowerCase() === 'img';
 					const childSrc = clear(isSource ? child.srcset : isImg ? child.src : '');
 					if (currentSrc === childSrc) {
-						src = child.getAttribute(_attrs.sourceImg) || null;
-						srcset = child.getAttribute(_attrs.sourceSrcSet);
+						src = child.getAttribute(attrs.sourceImg) || null;
+						srcset = child.getAttribute(attrs.sourceSrcSet);
 					}
 				}
 
@@ -177,8 +167,8 @@ const _load = (element, onLoad, onError, asPromise) => {
 				img.onload = function onload () {
 					for (let i = 0; i < element.children.length; i++) {
 						let child = element.children[i];
-						let src = child.getAttribute(_attrs.sourceImg);
-						let srcset = child.getAttribute(_attrs.sourceSrcSet);
+						let src = child.getAttribute(attrs.sourceImg);
+						let srcset = child.getAttribute(attrs.sourceSrcSet);
 
 						if (child.nodeName.toLowerCase() === 'source') {
 							if (srcset) {
@@ -208,7 +198,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 		}
 
 		// container
-		if (element.hasAttribute(_attrs.sourceContainer)) {
+		if (element.hasAttribute(attrs.sourceContainer)) {
 			_markAs.loaded(element);
 			onLoad(element);
 			if (resolve) {
@@ -237,7 +227,7 @@ const _load = (element, onLoad, onError, asPromise) => {
  * @private
  */
 const _createEvent = (name, detail = {}) => {
-	return new window.CustomEvent(`zzload:${name}`, { detail });
+	return new window.CustomEvent(name, { detail });
 };
 
 /**
@@ -245,28 +235,28 @@ const _createEvent = (name, detail = {}) => {
  */
 const _markAs = {
 	observed (element) {
-		element.setAttribute(_attrs.isObserved, '');
-		element.dispatchEvent(_createEvent('observed', { element }));
+		element.setAttribute(attrs.isObserved, '');
+		element.dispatchEvent(_createEvent(events.observed, { element }));
 	},
 	processed (element) {
-		element.setAttribute(_attrs.isProcessed, '');
-		element.dispatchEvent(_createEvent('processed', { element }));
+		element.setAttribute(attrs.isProcessed, '');
+		element.dispatchEvent(_createEvent(events.processed, { element }));
 	},
 	loaded (element, source) {
-		element.setAttribute(_attrs.isLoaded, '');
-		element.dispatchEvent(_createEvent('loaded', { element, source }));
+		element.setAttribute(attrs.isLoaded, '');
+		element.dispatchEvent(_createEvent(events.loaded, { element, source }));
 	},
 	failed (element, source) {
-		element.setAttribute(_attrs.isFailed, '');
-		element.dispatchEvent(_createEvent('failed', { element, source }));
+		element.setAttribute(attrs.isFailed, '');
+		element.dispatchEvent(_createEvent(events.failed, { element, source }));
 	},
 	inView (element, source) {
-		element.setAttribute(_attrs.isInView, '');
-		element.dispatchEvent(_createEvent('inView', { element, source }));
+		element.setAttribute(attrs.isInView, '');
+		element.dispatchEvent(_createEvent(events.inView, { element, source }));
 	},
 	outOfView (element, source) {
-		element.removeAttribute(_attrs.isInView, '');
-		element.dispatchEvent(_createEvent('outOfView', { element, source }));
+		element.removeAttribute(attrs.isInView, '');
+		element.dispatchEvent(_createEvent(events.outOfView, { element, source }));
 	}
 };
 
@@ -275,19 +265,19 @@ const _markAs = {
  */
 const _checkIs = {
 	observed (element) {
-		return element.hasAttribute(_attrs.isObserved);
+		return element.hasAttribute(attrs.isObserved);
 	},
 	processed (element) {
-		return element.hasAttribute(_attrs.isProcessed);
+		return element.hasAttribute(attrs.isProcessed);
 	},
 	loaded (element) {
-		return element.hasAttribute(_attrs.isLoaded);
+		return element.hasAttribute(attrs.isLoaded);
 	},
 	failed (element) {
-		return element.hasAttribute(_attrs.isFailed);
+		return element.hasAttribute(attrs.isFailed);
 	},
 	inView (element) {
-		return element.hasAttribute(_attrs.isInView);
+		return element.hasAttribute(attrs.isInView);
 	}
 };
 
@@ -300,7 +290,7 @@ const _onIntersection = options => (entries, observer) => {
 	entries.forEach(entry => {
 		/** @type {Element} */
 		let element = entry.target;
-		let inViewType = element.hasAttribute(_attrs.sourceInview);
+		let inViewType = element.hasAttribute(attrs.sourceInview);
 
 		if (entry.intersectionRatio > 0 || entry.isIntersecting) {
 			if (inViewType) {
