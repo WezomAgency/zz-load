@@ -140,6 +140,58 @@ var zzLoad = (function () {
 	      element.onerror = onerror;
 	      element.src = source;
 	      return null;
+	    } // picture
+
+
+	    if (element.nodeName.toLowerCase() === 'picture') {
+	      var _img = element.getElementsByTagName('img')[0];
+	      var patter = /^(http(s)?:)?\/\//i;
+
+	      if (_img instanceof window.HTMLImageElement) {
+	        var currentSrc = _img.currentSrc.replace(patter, '');
+
+	        var sources = null;
+
+	        for (var i = 0; i < element.children.length; i++) {
+	          var child = element.children[i];
+	          var childSrc = child.nodeName.toLowerCase() === 'source' ? child.srcset : child.src;
+
+	          if (currentSrc === childSrc.replace(patter, '')) {
+	            sources = child.dataset.zzloadSourcePicture || null;
+	          }
+	        }
+
+	        if (sources === null) {
+	          console.warn('Must provide `data-zzload-source-picture` on all children elements');
+	          console.warn(element);
+	          return null;
+	        }
+
+	        _img.onload = function onload() {
+	          for (var _i = 0; _i < element.children.length; _i++) {
+	            var _child = element.children[_i];
+
+	            if (_child.nodeName.toLowerCase() === 'source') {
+	              _child.srcset = _child.dataset.zzloadSourcePicture;
+	            } else {
+	              _child.src = _child.dataset.zzloadSourcePicture;
+	            }
+	          }
+	        };
+
+	        sources = sources.split(',');
+	        var src = sources.shift();
+	        var srcset = sources.join(',').replace(/^\s+/m, '');
+
+	        if (srcset) {
+	          _img.srcset = srcset;
+	        }
+
+	        _img.src = src;
+	        return null;
+	      }
+
+	      console.warn('No `img` in `picture`!');
 	    } // container
 
 

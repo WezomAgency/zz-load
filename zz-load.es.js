@@ -126,6 +126,52 @@ const _load = (element, onLoad, onError, asPromise) => {
 			return null;
 		}
 
+		// picture
+		if (element.nodeName.toLowerCase() === 'picture') {
+			const img = element.getElementsByTagName('img')[0];
+			const patter = /^(http(s)?:)?\/\//i;
+			if (img instanceof window.HTMLImageElement) {
+				let currentSrc = img.currentSrc.replace(patter, '');
+				let sources = null;
+
+				for (let i = 0; i < element.children.length; i++) {
+					const child = element.children[i];
+					const childSrc = (child.nodeName.toLowerCase() === 'source') ? child.srcset : child.src;
+					if (currentSrc === childSrc.replace(patter, '')) {
+						sources = child.dataset.zzloadSourcePicture || null;
+					}
+				}
+
+				if (sources === null) {
+					console.warn('Must provide `data-zzload-source-picture` on all children elements');
+					console.warn(element);
+					return null;
+				}
+
+				img.onload = function onload () {
+					for (let i = 0; i < element.children.length; i++) {
+						const child = element.children[i];
+						if (child.nodeName.toLowerCase() === 'source') {
+							child.srcset = child.dataset.zzloadSourcePicture;
+						} else {
+							child.src = child.dataset.zzloadSourcePicture;
+						}
+					}
+				};
+
+				sources = sources.split(',');
+				const src = sources.shift();
+				const srcset = sources.join(',').replace(/^\s+/m, '');
+
+				if (srcset) {
+					img.srcset = srcset;
+				}
+				img.src = src;
+				return null;
+			}
+			console.warn('No `img` in `picture`!');
+		}
+
 		// container
 		if (element.hasAttribute(_attrs.sourceContainer)) {
 			_markAs.loaded(element);
