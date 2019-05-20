@@ -5,7 +5,9 @@
 [![WezomAgency](https://img.shields.io/badge/wezom-agency-red.svg)](https://github.com/WezomAgency)
 [![Javascript Style Guide](https://img.shields.io/badge/code_style-wezom_relax-red.svg)](https://github.com/WezomAgency/eslint-config-wezom-relax)
 
-### _Status WIP_
+---
+
+### _**Status WIP**_
 
 ---
 
@@ -22,6 +24,7 @@
 | No dependencies                              | _**Yes**_ | _**Yes**_ |
 | Transpiled ES5 + `.min`                      | _**Yes**_ | _**Yes**_ |
 | IntersectionObserver                         | _**Yes**_ | _**Yes**_ |
+| Supports `srcset` attribute for `<img>`      | _**Yes**_ | _**Yes**_ |
 | Supports `picture` element                   | _**Yes**_ | _**Yes**_ |
 | Supports `iframe` element                    | _**Yes**_ | _**Yes**_ |
 | Custom `load()` method                       | _**Yes**_ | _No_      |
