@@ -14,20 +14,27 @@
 	<div class="container">
 		<div class="gap">
 			<h1 id="title" class="title">zz-load <br><code>&lt;img> examples:</code></h1>
-			<img src="../assets/poster/zz-load-poster.jpg"
-				 alt="zz-load"
-				 aria-labelledby="title">
-			<hr>
+			<div class="demo-image">
+				<img alt width="640" height="320" class="zzload-poster fade-in"
+					 data-zzload-source-img="../assets/poster/zz-load-poster.jpg"
+					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
+			</div>
+			<p class="small-controls">
+				<a href="../">◄ docs</a>
+				<span>scroll down ▼</span>
+			</p>
 		</div>
 
-		<div class="center gap js-preview">
-			<p id="simple-img" class="name">simple img</p>
-			<p class="statuses">
-				<span data-status="observed">observed</span>
-				<span data-status="processed">processed</span>
-				<span data-status="loaded">loaded</span>
-				<span data-status="failed">failed</span>
-			</p>
+		<div class="center gap js-preview-status">
+			<div id="simple-img" class="name">
+				<p>simple img</p>
+				<div class="statuses">
+					<span data-status="observed">observed</span>
+					<span data-status="processed">processed</span>
+					<span data-status="loaded">loaded</span>
+					<span data-status="failed">failed</span>
+				</div>
+			</div>
 			<div class="demo-image">
 				<img alt width="640" height="320" class="zzload fade-in"
 						data-zzload-source-img="./images/640x320/01.jpg"
@@ -35,8 +42,16 @@
 			</div>
 		</div>
 
-		<div class="center gap">
-			<p id="srcset@1.5x" class="name">srcset 1.5x</p>
+		<div class="center gap js-preview-status">
+			<div id="srcset@1.5x" class="name">
+				<p>srcset 1.5x</p>
+				<div class="statuses">
+					<span data-status="observed">observed</span>
+					<span data-status="processed">processed</span>
+					<span data-status="loaded">loaded</span>
+					<span data-status="failed">failed</span>
+				</div>
+			</div>
 			<div class="demo-image">
 				<img alt width="640" height="320" class="zzload fade-in"
 					 data-zzload-source-img="./images/640x320/02.jpg"
@@ -45,49 +60,43 @@
 			</div>
 		</div>
 
-		<div class="center gap">
-			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/FF1D1D-FF8649/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
+		<div class="center gap js-preview-status">
+			<div id="srcset@2x" class="name">
+				<p>srcset 2x</p>
+				<div class="statuses">
+					<span data-status="observed">observed</span>
+					<span data-status="processed">processed</span>
+					<span data-status="loaded">loaded</span>
+					<span data-status="failed">failed</span>
+				</div>
 			</div>
-		</div>
-
-		<div class="center gap">
 			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/FFBE32-FF8649/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
-			</div>
-		</div>
-
-		<div class="center gap">
-			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/FFBE32-44B9FF/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
-			</div>
-		</div>
-
-		<div class="center gap">
-			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/5A8FFF-D31BFF/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
+				<img alt width="640" height="320" class="zzload fade-in"
+					 data-zzload-source-img="./images/640x320/03.jpg"
+					 data-zzload-source-srcset="./images/960x480/03.jpg 1.5x, ./images/1280x640/03.jpg 2x,"
+					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
 		</div>
 	</div>
 	<script src="../assets/js/zz-load.js"></script>
+	<script src="../assets/js/utils/preview-status.js"></script>
 	<script>
 		(function () {
 			var zzLoad = window.zzLoad;
+
+			// demo elements
 			var observer = zzLoad('.zzload', {
-				onLoad: function (a, b, c) {
-					console.log(a, b, c);
-					console.log(this);
+				onLoad: function (element, source) {
+					console.group('zz-load demo info:');
+					console.log(element);
+					console.log('loaded source: ' + source);
+					console.groupEnd();
 				}
 			});
 			observer.observe();
+
+			// header poster
+			zzLoad('.zzload-poster').observe();
 		})();
 	</script>
 </body>
