@@ -35,14 +35,9 @@
 
 
 
-## Docs
+## Docs and examples
 
 https://WezomAgency.github.io/zz-load/
-
-
-## Live preview
-
-[https://WezomAgency.github.io/zz-load/examples/](https://wezomagency.github.io/zz-load/examples/index.html)
 
 ## License
 
