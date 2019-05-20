@@ -1,0 +1,9 @@
+.fade-in {
+	opacity: 0;
+}
+
+.fade-in[data-zzload-is-failed] {
+	opacity: 1;
+	background: #400;
+	transition: opacity .6s ease .2s;
+}

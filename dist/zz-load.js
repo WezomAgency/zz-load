@@ -37,15 +37,16 @@ var zzLoad = (function () {
 	// ----------------------------------------
 
 	/**
-	 * @type {Object}
+	 * @type {zzLoadOptions}
 	 * @private
 	 */
 
 	var _defaultOptions = {
 	  rootMargin: '0px',
 	  threshold: 0,
-	  clearAttrs: true,
-	  setSourceOnLoad: true,
+	  clearSourceAttrs: false,
+	  setSourcesOnlyOnLoad: true,
+	  onProcessStart: function onProcessStart() {},
 	  onLoad: function onLoad() {},
 	  onError: function onError() {}
 	};
@@ -81,15 +82,14 @@ var zzLoad = (function () {
 	};
 	/**
 	 * @param {Element} element
-	 * @param {Function} onLoad
-	 * @param {Function} onError
+	 * @param {zzLoadOptions} options
 	 * @param {boolean} [asPromise]
 	 * @return {null|Promise}
 	 * @private
 	 */
 
 
-	var _load = function _load(element, onLoad, onError, asPromise) {
+	var _load = function _load(element, options, asPromise) {
 	  /**
 	   * @param {Function} [resolve]
 	   * @param {Function} [reject]
@@ -98,12 +98,17 @@ var zzLoad = (function () {
 	  var load = function load(resolve, reject) {
 	    _markAs.processed(element);
 
+	    options.onProcessStart(element);
 	    var img = document.createElement('img');
 
 	    var loadActions = function loadActions(src) {
+	      if (options.clearSourceAttrs) {
+	        _sanitaze(element);
+	      }
+
 	      _markAs.loaded(element, src);
 
-	      onLoad(element, src);
+	      options.onLoad(element, src);
 
 	      if (resolve) {
 	        resolve(element, src);
@@ -111,8 +116,6 @@ var zzLoad = (function () {
 	    };
 
 	    function onload() {
-	      _sanitaze(element);
-
 	      loadActions(this.src);
 	    }
 
@@ -121,7 +124,7 @@ var zzLoad = (function () {
 
 	      _markAs.failed(element, src);
 
-	      onError(element, src);
+	      options.onError(element, src);
 
 	      if (reject) {
 	        reject(element, src);
@@ -136,13 +139,32 @@ var zzLoad = (function () {
 	    if (source) {
 	      var srcset = element.getAttribute(attrs.sourceSrcSet);
 
+	      img.onload = function () {
+	        if (options.setSourcesOnlyOnLoad) {
+	          if (srcset) {
+	            element.srcset = srcset;
+	          }
+
+	          element.src = source;
+	        }
+
+	        loadActions(img.currentSrc);
+	      };
+
 	      if (srcset) {
 	        img.srcset = srcset;
-	        element.srcset = srcset;
+
+	        if (options.setSourcesOnlyOnLoad !== true) {
+	          element.srcset = srcset;
+	        }
 	      }
 
 	      img.src = source;
-	      element.src = source;
+
+	      if (options.setSourcesOnlyOnLoad !== true) {
+	        element.src = source;
+	      }
+
 	      return null;
 	    } // style="background-image: url(...)"
 
@@ -253,7 +275,7 @@ var zzLoad = (function () {
 	    if (element.hasAttribute(attrs.sourceContainer)) {
 	      _markAs.loaded(element);
 
-	      onLoad(element);
+	      options.onLoad(element);
 
 	      if (resolve) {
 	        resolve(element);
@@ -376,7 +398,7 @@ var zzLoad = (function () {
 	        } else {
 	          observer.unobserve(element);
 
-	          _load(element, options.onLoad, options.onError);
+	          _load(element, options);
 	        }
 	      } else {
 	        if (inViewType && _checkIs.inView(element)) {
@@ -453,7 +475,7 @@ var zzLoad = (function () {
 	          continue;
 	        }
 
-	        _load(element, options.onLoad, options.onError);
+	        _load(element, options);
 	      }
 	    },
 	    triggerLoad: function triggerLoad(element) {
@@ -463,10 +485,23 @@ var zzLoad = (function () {
 
 	      _markAs.observed(element);
 
-	      return _load(element, options.onLoad, options.onError, true);
+	      return _load(element, options, true);
 	    }
 	  };
 	} // ----------------------------------------
+	// Definitions
+	// ----------------------------------------
+
+	/**
+	 * @typedef {Object} zzLoadOptions
+	 * @property {string} [rootMargin] - '0px'
+	 * @property {number} [threshold] - 0
+	 * @property {boolean} [clearSourceAttrs] - false
+	 * @property {boolean} [setSourcesOnlyOnLoad] - true
+	 * @property {function} [onProcessStart] - element: HTMLElement
+	 * @property {function} [onLoad] - element: HTMLElement, source: string
+	 * @property {function} [onError] - element: HTMLElement, source: string
+	 */
 
 	return zzLoad;
 

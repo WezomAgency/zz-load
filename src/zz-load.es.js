@@ -17,14 +17,15 @@ import { attrs, events } from './data';
 // ----------------------------------------
 
 /**
- * @type {Object}
+ * @type {zzLoadOptions}
  * @private
  */
 const _defaultOptions = {
 	rootMargin: '0px',
 	threshold: 0,
-	clearAttrs: true,
-	setSourceOnLoad: true,
+	clearSourceAttrs: false,
+	setSourcesOnlyOnLoad: true,
+	onProcessStart () {},
 	onLoad () {},
 	onError () {}
 };
@@ -57,13 +58,12 @@ const _sanitaze = element => {
 
 /**
  * @param {Element} element
- * @param {Function} onLoad
- * @param {Function} onError
+ * @param {zzLoadOptions} options
  * @param {boolean} [asPromise]
  * @return {null|Promise}
  * @private
  */
-const _load = (element, onLoad, onError, asPromise) => {
+const _load = (element, options, asPromise) => {
 	/**
 	 * @param {Function} [resolve]
 	 * @param {Function} [reject]
@@ -71,25 +71,28 @@ const _load = (element, onLoad, onError, asPromise) => {
 	 */
 	let load = (resolve, reject) => {
 		_markAs.processed(element);
+		options.onProcessStart(element);
 		let img = document.createElement('img');
 
 		const loadActions = (src) => {
+			if (options.clearSourceAttrs) {
+				_sanitaze(element);
+			}
 			_markAs.loaded(element, src);
-			onLoad(element, src);
+			options.onLoad(element, src);
 			if (resolve) {
 				resolve(element, src);
 			}
 		};
 
 		function onload () {
-			_sanitaze(element);
 			loadActions(this.src);
 		}
 
 		function onerror () {
 			const src = this.src;
 			_markAs.failed(element, src);
-			onError(element, src);
+			options.onError(element, src);
 			if (reject) {
 				reject(element, src);
 			}
@@ -102,12 +105,27 @@ const _load = (element, onLoad, onError, asPromise) => {
 		let source = element.getAttribute(attrs.sourceImg);
 		if (source) {
 			let srcset = element.getAttribute(attrs.sourceSrcSet);
+			img.onload = function () {
+				if (options.setSourcesOnlyOnLoad) {
+					if (srcset) {
+						element.srcset = srcset;
+					}
+					element.src = source;
+				}
+				loadActions(img.currentSrc);
+			};
+
 			if (srcset) {
 				img.srcset = srcset;
-				element.srcset = srcset;
+				if (options.setSourcesOnlyOnLoad !== true) {
+					element.srcset = srcset;
+				}
 			}
+
 			img.src = source;
-			element.src = source;
+			if (options.setSourcesOnlyOnLoad !== true) {
+				element.src = source;
+			}
 			return null;
 		}
 
@@ -200,7 +218,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 		// container
 		if (element.hasAttribute(attrs.sourceContainer)) {
 			_markAs.loaded(element);
-			onLoad(element);
+			options.onLoad(element);
 			if (resolve) {
 				resolve(element);
 			}
@@ -297,7 +315,7 @@ const _onIntersection = options => (entries, observer) => {
 				_markAs.inView(element, null);
 			} else {
 				observer.unobserve(element);
-				_load(element, options.onLoad, options.onError);
+				_load(element, options);
 			}
 		} else {
 			if (inViewType && _checkIs.inView(element)) {
@@ -363,7 +381,7 @@ function zzLoad (elements, userOptions) {
 					observer.observe(element);
 					continue;
 				}
-				_load(element, options.onLoad, options.onError);
+				_load(element, options);
 			}
 		},
 		triggerLoad (element) {
@@ -371,7 +389,7 @@ function zzLoad (elements, userOptions) {
 				return;
 			}
 			_markAs.observed(element);
-			return _load(element, options.onLoad, options.onError, true);
+			return _load(element, options, true);
 		}
 	};
 }
@@ -381,3 +399,18 @@ function zzLoad (elements, userOptions) {
 // ----------------------------------------
 
 export default zzLoad;
+
+// ----------------------------------------
+// Definitions
+// ----------------------------------------
+
+/**
+ * @typedef {Object} zzLoadOptions
+ * @property {string} [rootMargin] - '0px'
+ * @property {number} [threshold] - 0
+ * @property {boolean} [clearSourceAttrs] - false
+ * @property {boolean} [setSourcesOnlyOnLoad] - true
+ * @property {function} [onProcessStart] - element: HTMLElement
+ * @property {function} [onLoad] - element: HTMLElement, source: string
+ * @property {function} [onError] - element: HTMLElement, source: string
+ */

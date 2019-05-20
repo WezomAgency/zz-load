@@ -1,6 +1,6 @@
 # Usage
 
-:arrow_left: [Home](../index.md)
+[◄ Home](../index.md)
 
 ### Prepare markup
 
@@ -50,4 +50,4 @@ observer.observe();
 
 ----
 
-:arrow_left: [Home](../README.md) | :arrow_up: [Top](#readme)
+[◄ Home](../README.md) | [▲ Top](#readme)

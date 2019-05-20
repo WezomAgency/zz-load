@@ -9,6 +9,8 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/vendors/prism.css">
+	<link rel="stylesheet" href="https://dutchenkooleg.github.io/prismjs-material-theme/css/oceanic.css">
 </head>
 <body>
 	<div class="container">
@@ -40,7 +42,15 @@
 						data-zzload-source-img="./images/640x320/01.jpg"
 						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
+			<pre data-src="./code-samples/img-01.html"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
+			<pre data-src="./code-samples/fade-in.css"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
 		</div>
+
+
 
 		<div class="center gap js-preview-status">
 			<div id="srcset@1.5x" class="name">
@@ -58,7 +68,15 @@
 					 data-zzload-source-srcset="./images/960x480/02.jpg 1.5x"
 					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
+			<pre data-src="./code-samples/img-02.html"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
+			<pre data-src="./code-samples/fade-in.css"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
 		</div>
+
+
 
 		<div class="center gap js-preview-status">
 			<div id="srcset@2x" class="name">
@@ -73,23 +91,69 @@
 			<div class="demo-image">
 				<img alt width="640" height="320" class="zzload fade-in"
 					 data-zzload-source-img="./images/640x320/03.jpg"
-					 data-zzload-source-srcset="./images/960x480/03.jpg 1.5x, ./images/1280x640/03.jpg 2x,"
+					 data-zzload-source-srcset="./images/960x480/03.jpg 1.5x, ./images/1280x640/03.jpg 2x"
 					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
+			<pre data-src="./code-samples/img-03.html"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
+			<pre data-src="./code-samples/fade-in.css"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
+		</div>
+
+
+
+		<div class="center gap js-preview-status">
+			<div id="error-loading" class="name">
+				<p>error loading</p>
+				<div class="statuses">
+					<span data-status="observed">observed</span>
+					<span data-status="processed">processed</span>
+					<span data-status="loaded">loaded</span>
+					<span data-status="failed">failed</span>
+				</div>
+			</div>
+			<div class="demo-image">
+				<img alt width="640" height="320" class="zzload fade-in"
+					 data-zzload-source-img="./images/640x320/no-file.jpg"
+					 data-zzload-source-srcset="./images/960x480/no-file.jpg 1.5x, ./images/1280x640/no-file.jpg 2x"
+					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
+			</div>
+			<pre data-src="./code-samples/img-04.html"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
+			<pre data-src="./code-samples/fade-in-failed.css"
+				 data-download-link
+				 data-download-link-label="Download example file"></pre>
 		</div>
 	</div>
 	<script src="../assets/js/zz-load.js"></script>
 	<script src="../assets/js/utils/preview-status.js"></script>
+	<script src="../assets/js/vendors/prism.js"></script>
 	<script>
 		(function () {
 			var zzLoad = window.zzLoad;
 
 			// demo elements
-			var observer = zzLoad('.zzload', {
+			var observer = zzLoad('.zzload', /** @type {zzLoadOptions} */ {
+				clearSourceAttrs: true,
+				setSourcesOnlyOnLoad: true,
+				onProcessStart: function (element) {
+					console.group('zz-load process:');
+					console.log(element);
+					console.groupEnd();
+				},
 				onLoad: function (element, source) {
-					console.group('zz-load demo info:');
+					console.group('zz-load loaded:');
 					console.log(element);
 					console.log('loaded source: ' + source);
+					console.groupEnd();
+				},
+				onError: function (element, source) {
+					console.group('zz-load failed:');
+					console.log(element);
+					console.log('source failure: ' + source);
 					console.groupEnd();
 				}
 			});
