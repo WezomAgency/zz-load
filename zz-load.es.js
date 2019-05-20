@@ -44,11 +44,25 @@ const _attrs = {
 	isFailed: 'data-zzload-is-failed',
 	isInView: 'data-zzload-is-inview',
 	sourceImg: 'data-zzload-source-img',
+	sourceSrcSet: 'data-zzload-source-srcset',
 	sourceBgImg: 'data-zzload-source-background-img',
 	sourceImage: 'data-zzload-source-image',
 	sourceIframe: 'data-zzload-source-iframe',
 	sourceContainer: 'data-zzload-container',
 	sourceInview: 'data-zzload-inview'
+};
+
+/**
+ * @param {HTMLElement} element
+ * @private
+ */
+const _sanitaze = element => {
+	element.removeAttribute(_attrs.sourceImg);
+	element.removeAttribute(_attrs.sourceSrcSet);
+	element.removeAttribute(_attrs.sourceBgImg);
+	element.removeAttribute(_attrs.sourceImage);
+	element.removeAttribute(_attrs.sourceIframe);
+	element.removeAttribute(_attrs.sourceContainer);
 };
 
 /**
@@ -69,13 +83,17 @@ const _load = (element, onLoad, onError, asPromise) => {
 		_markAs.processed(element);
 		let img = document.createElement('img');
 
-		function onload () {
-			const src = this.src;
+		const loadActions = (src) => {
 			_markAs.loaded(element, src);
 			onLoad(element, src);
 			if (resolve) {
 				resolve(element, src);
 			}
+		};
+
+		function onload () {
+			_sanitaze(element);
+			loadActions(this.src);
 		}
 
 		function onerror () {
@@ -93,6 +111,11 @@ const _load = (element, onLoad, onError, asPromise) => {
 		// img
 		let source = element.getAttribute(_attrs.sourceImg);
 		if (source) {
+			let srcset = element.getAttribute(_attrs.sourceSrcSet);
+			if (srcset) {
+				img.srcset = srcset;
+				element.srcset = srcset;
+			}
 			img.src = source;
 			element.src = source;
 			return null;
@@ -132,17 +155,21 @@ const _load = (element, onLoad, onError, asPromise) => {
 			const patter = /^(http(s)?:)?\/\//i;
 			if (pitureImg instanceof window.HTMLImageElement) {
 				let currentSrc = pitureImg.currentSrc.replace(patter, '');
-				let sources = null;
+				let src = null;
+				let srcset = null;
 
 				for (let i = 0; i < element.children.length; i++) {
 					const child = element.children[i];
-					const childSrc = (child.nodeName.toLowerCase() === 'source') ? child.srcset : child.src;
+					const isSource = child.nodeName.toLowerCase() === 'source';
+					const isImg = child.nodeName.toLowerCase() === 'img';
+					const childSrc = isSource ? child.srcset : isImg ? child.src : '';
 					if (currentSrc === childSrc.replace(patter, '')) {
-						sources = child.dataset.zzloadSourcePicture || null;
+						src = child.getAttribute(_attrs.sourceImg) || null;
+						srcset = child.getAttribute(_attrs.sourceSrcSet);
 					}
 				}
 
-				if (sources === null) {
+				if (src === null) {
 					console.warn('Must provide `data-zzload-source-picture` on all children elements');
 					console.warn(element);
 					return null;
@@ -150,25 +177,26 @@ const _load = (element, onLoad, onError, asPromise) => {
 
 				img.onload = function onload () {
 					for (let i = 0; i < element.children.length; i++) {
-						const child = element.children[i];
+						let child = element.children[i];
+						let src = child.getAttribute(_attrs.sourceImg);
+						let srcset = child.getAttribute(_attrs.sourceSrcSet);
+
 						if (child.nodeName.toLowerCase() === 'source') {
-							child.srcset = child.dataset.zzloadSourcePicture;
-						} else {
-							child.src = child.dataset.zzloadSourcePicture;
+							if (srcset) {
+								src += (', ' + srcset);
+							}
+							child.srcset = src;
+						} else if (child.nodeName.toLowerCase() === 'img') {
+							if (srcset) {
+								child.srcset = srcset;
+							}
+							child.src = src;
 						}
+						_sanitaze(child);
 					}
-
 					const src = img.currentSrc;
-					_markAs.loaded(element, src);
-					onLoad(element, src);
-					if (resolve) {
-						resolve(element, src);
-					}
+					loadActions(src);
 				};
-
-				sources = sources.split(',');
-				const src = sources.shift();
-				const srcset = sources.join(',').replace(/^\s+/m, '');
 
 				if (srcset) {
 					img.srcset = srcset;

@@ -49,11 +49,25 @@ var zzLoad = (function () {
 	  isFailed: 'data-zzload-is-failed',
 	  isInView: 'data-zzload-is-inview',
 	  sourceImg: 'data-zzload-source-img',
+	  sourceSrcSet: 'data-zzload-source-srcset',
 	  sourceBgImg: 'data-zzload-source-background-img',
 	  sourceImage: 'data-zzload-source-image',
 	  sourceIframe: 'data-zzload-source-iframe',
 	  sourceContainer: 'data-zzload-container',
 	  sourceInview: 'data-zzload-inview'
+	};
+	/**
+	 * @param {HTMLElement} element
+	 * @private
+	 */
+
+	var _sanitaze = function _sanitaze(element) {
+	  element.removeAttribute(_attrs.sourceImg);
+	  element.removeAttribute(_attrs.sourceSrcSet);
+	  element.removeAttribute(_attrs.sourceBgImg);
+	  element.removeAttribute(_attrs.sourceImage);
+	  element.removeAttribute(_attrs.sourceIframe);
+	  element.removeAttribute(_attrs.sourceContainer);
 	};
 	/**
 	 * @param {Element} element
@@ -63,6 +77,7 @@ var zzLoad = (function () {
 	 * @return {null|Promise}
 	 * @private
 	 */
+
 
 	var _load = function _load(element, onLoad, onError, asPromise) {
 	  /**
@@ -75,9 +90,7 @@ var zzLoad = (function () {
 
 	    var img = document.createElement('img');
 
-	    function onload() {
-	      var src = this.src;
-
+	    var loadActions = function loadActions(src) {
 	      _markAs.loaded(element, src);
 
 	      onLoad(element, src);
@@ -85,6 +98,12 @@ var zzLoad = (function () {
 	      if (resolve) {
 	        resolve(element, src);
 	      }
+	    };
+
+	    function onload() {
+	      _sanitaze(element);
+
+	      loadActions(this.src);
 	    }
 
 	    function onerror() {
@@ -105,6 +124,13 @@ var zzLoad = (function () {
 	    var source = element.getAttribute(_attrs.sourceImg);
 
 	    if (source) {
+	      var srcset = element.getAttribute(_attrs.sourceSrcSet);
+
+	      if (srcset) {
+	        img.srcset = srcset;
+	        element.srcset = srcset;
+	      }
+
 	      img.src = source;
 	      element.src = source;
 	      return null;
@@ -149,18 +175,22 @@ var zzLoad = (function () {
 
 	      if (pitureImg instanceof window.HTMLImageElement) {
 	        var currentSrc = pitureImg.currentSrc.replace(patter, '');
-	        var sources = null;
+	        var src = null;
+	        var _srcset = null;
 
 	        for (var i = 0; i < element.children.length; i++) {
 	          var child = element.children[i];
-	          var childSrc = child.nodeName.toLowerCase() === 'source' ? child.srcset : child.src;
+	          var isSource = child.nodeName.toLowerCase() === 'source';
+	          var isImg = child.nodeName.toLowerCase() === 'img';
+	          var childSrc = isSource ? child.srcset : isImg ? child.src : '';
 
 	          if (currentSrc === childSrc.replace(patter, '')) {
-	            sources = child.dataset.zzloadSourcePicture || null;
+	            src = child.getAttribute(_attrs.sourceImg) || null;
+	            _srcset = child.getAttribute(_attrs.sourceSrcSet);
 	          }
 	        }
 
-	        if (sources === null) {
+	        if (src === null) {
 	          console.warn('Must provide `data-zzload-source-picture` on all children elements');
 	          console.warn(element);
 	          return null;
@@ -170,30 +200,33 @@ var zzLoad = (function () {
 	          for (var _i = 0; _i < element.children.length; _i++) {
 	            var _child = element.children[_i];
 
+	            var _src = _child.getAttribute(_attrs.sourceImg);
+
+	            var _srcset2 = _child.getAttribute(_attrs.sourceSrcSet);
+
 	            if (_child.nodeName.toLowerCase() === 'source') {
-	              _child.srcset = _child.dataset.zzloadSourcePicture;
-	            } else {
-	              _child.src = _child.dataset.zzloadSourcePicture;
+	              if (_srcset2) {
+	                _src += ', ' + _srcset2;
+	              }
+
+	              _child.srcset = _src;
+	            } else if (_child.nodeName.toLowerCase() === 'img') {
+	              if (_srcset2) {
+	                _child.srcset = _srcset2;
+	              }
+
+	              _child.src = _src;
 	            }
+
+	            _sanitaze(_child);
 	          }
 
 	          var src = img.currentSrc;
-
-	          _markAs.loaded(element, src);
-
-	          onLoad(element, src);
-
-	          if (resolve) {
-	            resolve(element, src);
-	          }
+	          loadActions(src);
 	        };
 
-	        sources = sources.split(',');
-	        var src = sources.shift();
-	        var srcset = sources.join(',').replace(/^\s+/m, '');
-
-	        if (srcset) {
-	          img.srcset = srcset;
+	        if (_srcset) {
+	          img.srcset = _srcset;
 	        }
 
 	        img.src = src;
