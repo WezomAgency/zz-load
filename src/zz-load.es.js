@@ -341,6 +341,8 @@ function zzLoad (elements, userOptions) {
 	let options = _extend(userOptions);
 	let observer = null;
 
+	console.log(options, userOptions);
+
 	if (window.IntersectionObserver) {
 		observer = new window.IntersectionObserver(_onIntersection(options), {
 			rootMargin: options.rootMargin,

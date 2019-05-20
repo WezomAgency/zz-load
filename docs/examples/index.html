@@ -8,31 +8,40 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-	<link rel="stylesheet" href="./assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
 	<div class="container">
 		<div class="gap">
 			<h1 id="title" class="title">zz-load <br><code>&lt;img> examples:</code></h1>
-			<img src="./assets/poster/zz-load-poster.jpg"
+			<img src="../assets/poster/zz-load-poster.jpg"
 				 alt="zz-load"
 				 aria-labelledby="title">
 			<hr>
 		</div>
 
-		<div class="center gap">
+		<div class="center gap js-preview">
+			<p id="simple-img" class="name">simple img</p>
+			<p class="statuses">
+				<span data-status="observed">observed</span>
+				<span data-status="processed">processed</span>
+				<span data-status="loaded">loaded</span>
+				<span data-status="failed">failed</span>
+			</p>
 			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/3522FF-FF6FF0/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
+				<img alt width="640" height="320" class="zzload fade-in"
+						data-zzload-source-img="./images/640x320/01.jpg"
+						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
 		</div>
 
 		<div class="center gap">
+			<p id="srcset@1.5x" class="name">srcset 1.5x</p>
 			<div class="demo-image">
-				<img alt width="700" height="400" class="zzload fade-in"
-						data-zzload-source-img="https://placeholder.pics/svg/700x400/FF1D1D-6A32FF/FFFFFF/zzload-source-img"
-						src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;700&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;">
+				<img alt width="640" height="320" class="zzload fade-in"
+					 data-zzload-source-img="./images/640x320/02.jpg"
+					 data-zzload-source-srcset="./images/960x480/02.jpg 1.5x"
+					 src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;640&quot; height=&quot;320&quot;&gt;&lt;/svg&gt;">
 			</div>
 		</div>
 
@@ -68,11 +77,16 @@
 			</div>
 		</div>
 	</div>
-	<script src="../dist/zz-load.min.js"></script>
+	<script src="../assets/js/zz-load.js"></script>
 	<script>
 		(function () {
 			var zzLoad = window.zzLoad;
-			var observer = zzLoad();
+			var observer = zzLoad('.zzload', {
+				onLoad: function (a, b, c) {
+					console.log(a, b, c);
+					console.log(this);
+				}
+			});
 			observer.observe();
 		})();
 	</script>
