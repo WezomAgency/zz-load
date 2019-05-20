@@ -15,7 +15,7 @@ const rollupPluginBabel = require('rollup-plugin-babel');
 // ----------------------------------------
 
 export default {
-	input: './zz-load.es.js',
+	input: './src/zz-load.es.js',
 	output: {
 		file: './dist/zz-load.js',
 		format: 'iife',

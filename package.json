@@ -31,7 +31,7 @@
     "@babel/core": "^7.2.0",
     "babel-preset-env": "^2.0.0-alpha.20",
     "eslint": "^5.10.0",
-    "eslint-config-wezom-relax": "^1.0.3",
+    "eslint-config-wezom-relax": "^1.1.0",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.0.3",
     "uglify-js": "^3.4.9"
