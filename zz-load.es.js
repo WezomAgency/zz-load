@@ -128,10 +128,10 @@ const _load = (element, onLoad, onError, asPromise) => {
 
 		// picture
 		if (element.nodeName.toLowerCase() === 'picture') {
-			const img = element.getElementsByTagName('img')[0];
+			const pitureImg = element.getElementsByTagName('img')[0];
 			const patter = /^(http(s)?:)?\/\//i;
-			if (img instanceof window.HTMLImageElement) {
-				let currentSrc = img.currentSrc.replace(patter, '');
+			if (pitureImg instanceof window.HTMLImageElement) {
+				let currentSrc = pitureImg.currentSrc.replace(patter, '');
 				let sources = null;
 
 				for (let i = 0; i < element.children.length; i++) {
@@ -156,6 +156,13 @@ const _load = (element, onLoad, onError, asPromise) => {
 						} else {
 							child.src = child.dataset.zzloadSourcePicture;
 						}
+					}
+
+					const src = img.currentSrc;
+					_markAs.loaded(element, src);
+					onLoad(element, src);
+					if (resolve) {
+						resolve(element, src);
 					}
 				};
 

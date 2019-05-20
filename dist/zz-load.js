@@ -144,12 +144,11 @@ var zzLoad = (function () {
 
 
 	    if (element.nodeName.toLowerCase() === 'picture') {
-	      var _img = element.getElementsByTagName('img')[0];
+	      var pitureImg = element.getElementsByTagName('img')[0];
 	      var patter = /^(http(s)?:)?\/\//i;
 
-	      if (_img instanceof window.HTMLImageElement) {
-	        var currentSrc = _img.currentSrc.replace(patter, '');
-
+	      if (pitureImg instanceof window.HTMLImageElement) {
+	        var currentSrc = pitureImg.currentSrc.replace(patter, '');
 	        var sources = null;
 
 	        for (var i = 0; i < element.children.length; i++) {
@@ -167,7 +166,7 @@ var zzLoad = (function () {
 	          return null;
 	        }
 
-	        _img.onload = function onload() {
+	        img.onload = function onload() {
 	          for (var _i = 0; _i < element.children.length; _i++) {
 	            var _child = element.children[_i];
 
@@ -177,6 +176,16 @@ var zzLoad = (function () {
 	              _child.src = _child.dataset.zzloadSourcePicture;
 	            }
 	          }
+
+	          var src = img.currentSrc;
+
+	          _markAs.loaded(element, src);
+
+	          onLoad(element, src);
+
+	          if (resolve) {
+	            resolve(element, src);
+	          }
 	        };
 
 	        sources = sources.split(',');
@@ -184,10 +193,10 @@ var zzLoad = (function () {
 	        var srcset = sources.join(',').replace(/^\s+/m, '');
 
 	        if (srcset) {
-	          _img.srcset = srcset;
+	          img.srcset = srcset;
 	        }
 
-	        _img.src = src;
+	        img.src = src;
 	        return null;
 	      }
 
