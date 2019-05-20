@@ -22,7 +22,8 @@
 | No dependencies                              | _**Yes**_ | _**Yes**_ |
 | Transpiled ES5 + `.min`                      | _**Yes**_ | _**Yes**_ |
 | IntersectionObserver                         | _**Yes**_ | _**Yes**_ |
-| Supports `iframe` elements                   | _**Yes**_ | _**Yes**_ |
+| Supports `picture` element                   | _**Yes**_ | _**Yes**_ |
+| Supports `iframe` element                    | _**Yes**_ | _**Yes**_ |
 | Custom `load()` method                       | _**Yes**_ | _No_      |
 | Use with SVG `<image>` element               | _No_      | _**Yes**_ |
 | Use with simple container, aka [jquery.inview](https://github.com/protonet/jquery.inview) | _No_      | _**Yes**_ |
