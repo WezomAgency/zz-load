@@ -171,10 +171,13 @@ var zzLoad = (function () {
 
 	    if (element.nodeName.toLowerCase() === 'picture') {
 	      var pitureImg = element.getElementsByTagName('img')[0];
-	      var patter = /^(http(s)?:)?\/\//i;
 
 	      if (pitureImg instanceof window.HTMLImageElement) {
-	        var currentSrc = pitureImg.currentSrc.replace(patter, '');
+	        var clear = function clear(str) {
+	          return str.replace(/^\/\//i, '').replace(window.location.origin, '');
+	        };
+
+	        var currentSrc = clear(pitureImg.currentSrc);
 	        var src = null;
 	        var _srcset = null;
 
@@ -182,9 +185,9 @@ var zzLoad = (function () {
 	          var child = element.children[i];
 	          var isSource = child.nodeName.toLowerCase() === 'source';
 	          var isImg = child.nodeName.toLowerCase() === 'img';
-	          var childSrc = isSource ? child.srcset : isImg ? child.src : '';
+	          var childSrc = clear(isSource ? child.srcset : isImg ? child.src : '');
 
-	          if (currentSrc === childSrc.replace(patter, '')) {
+	          if (currentSrc === childSrc) {
 	            src = child.getAttribute(_attrs.sourceImg) || null;
 	            _srcset = child.getAttribute(_attrs.sourceSrcSet);
 	          }
