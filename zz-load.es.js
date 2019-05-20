@@ -152,18 +152,17 @@ const _load = (element, onLoad, onError, asPromise) => {
 		// picture
 		if (element.nodeName.toLowerCase() === 'picture') {
 			const pitureImg = element.getElementsByTagName('img')[0];
-			const patter = /^(http(s)?:)?\/\//i;
 			if (pitureImg instanceof window.HTMLImageElement) {
-				let currentSrc = pitureImg.currentSrc.replace(patter, '');
+				const clear = str => str.replace(/^\/\//i, '').replace(window.location.origin, '');
+				const currentSrc = clear(pitureImg.currentSrc);
 				let src = null;
 				let srcset = null;
-
 				for (let i = 0; i < element.children.length; i++) {
 					const child = element.children[i];
 					const isSource = child.nodeName.toLowerCase() === 'source';
 					const isImg = child.nodeName.toLowerCase() === 'img';
-					const childSrc = isSource ? child.srcset : isImg ? child.src : '';
-					if (currentSrc === childSrc.replace(patter, '')) {
+					const childSrc = clear(isSource ? child.srcset : isImg ? child.src : '');
+					if (currentSrc === childSrc) {
 						src = child.getAttribute(_attrs.sourceImg) || null;
 						srcset = child.getAttribute(_attrs.sourceSrcSet);
 					}
@@ -201,6 +200,7 @@ const _load = (element, onLoad, onError, asPromise) => {
 				if (srcset) {
 					img.srcset = srcset;
 				}
+
 				img.src = src;
 				return null;
 			}
