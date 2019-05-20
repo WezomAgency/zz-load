@@ -4,7 +4,7 @@
   "description": "",
   "main": "zz-load.es.js",
   "scripts": {
-    "test": "eslint ./zz-load.es.js --fix",
+    "test": "eslint ./src/*.js --fix",
     "build": "npm test && npm run rollup && npm run uglify",
     "rollup": "rollup -c",
     "uglify": "uglifyjs -cmo dist/zz-load.min.js -- dist/zz-load.js"
