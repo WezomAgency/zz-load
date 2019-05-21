@@ -50,4 +50,4 @@ observer.observe();
 
 ----
 
-[◄ Home](../index.md) | [▲ Top](#readme)
+[◄ Home](../index.md) | [▲ Top](#)

@@ -25,4 +25,4 @@ npm i zz-load
 
 ----
 
-[◄ Home](../index.md) | [▲ Top](#readme)
+[◄ Home](../index.md) | [▲ Top](#)

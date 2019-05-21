@@ -6,6 +6,6 @@
 1. [Usage](./docs/usage.md)
 1. [API](./docs/api.md)
 1. Examples
-    - [&lt;img>](./examples/img.html)
+    - [&lt;img> element](./examples/img.html)
 
 ---

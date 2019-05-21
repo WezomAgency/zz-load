@@ -1,8 +1,8 @@
 {
   "name": "zz-load",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "",
-  "main": "zz-load.es.js",
+  "main": "./src/zz-load.es.js",
   "scripts": {
     "test": "eslint ./src/*.js --fix",
     "dev": "rollup -c --watch",
