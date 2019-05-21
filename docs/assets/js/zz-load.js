@@ -131,7 +131,6 @@ var zzLoad = (function () {
 	      }
 	    }
 
-	    img.onload = onload;
 	    img.onerror = onerror; // img
 
 	    var source = element.getAttribute(attrs.sourceImg);
@@ -172,8 +171,20 @@ var zzLoad = (function () {
 	    source = element.getAttribute(attrs.sourceBgImg);
 
 	    if (source) {
+	      img.onload = function () {
+	        if (options.setSourcesOnlyOnLoad) {
+	          element.style.backgroundImage = "url(".concat(source, ")");
+	        }
+
+	        loadActions(img.currentSrc);
+	      };
+
 	      img.src = source;
-	      element.style.backgroundImage = "url(".concat(source, ")");
+
+	      if (options.setSourcesOnlyOnLoad !== true) {
+	        element.style.backgroundImage = "url(".concat(source, ")");
+	      }
+
 	      return null;
 	    } // SVG image
 
@@ -184,8 +195,20 @@ var zzLoad = (function () {
 	      var image = element.querySelector('image');
 
 	      if (image instanceof window.SVGImageElement) {
+	        img.onload = function () {
+	          if (options.setSourcesOnlyOnLoad) {
+	            image.setAttribute('href', source);
+	          }
+
+	          loadActions(img.currentSrc);
+	        };
+
 	        img.src = source;
-	        image.setAttribute('href', source);
+
+	        if (options.setSourcesOnlyOnLoad !== true) {
+	          image.setAttribute('href', source);
+	        }
+
 	        return null;
 	      }
 	    } // iframe
@@ -448,7 +471,6 @@ var zzLoad = (function () {
 	  var options = _extend(userOptions);
 
 	  var observer = null;
-	  console.log(options, userOptions);
 
 	  if (window.IntersectionObserver) {
 	    observer = new window.IntersectionObserver(_onIntersection(options), {

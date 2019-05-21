@@ -98,7 +98,6 @@ const _load = (element, options, asPromise) => {
 			}
 		}
 
-		img.onload = onload;
 		img.onerror = onerror;
 
 		// img
@@ -132,8 +131,16 @@ const _load = (element, options, asPromise) => {
 		// style="background-image: url(...)"
 		source = element.getAttribute(attrs.sourceBgImg);
 		if (source) {
+			img.onload = function () {
+				if (options.setSourcesOnlyOnLoad) {
+					element.style.backgroundImage = `url(${source})`;
+				}
+				loadActions(img.currentSrc);
+			};
 			img.src = source;
-			element.style.backgroundImage = `url(${source})`;
+			if (options.setSourcesOnlyOnLoad !== true) {
+				element.style.backgroundImage = `url(${source})`;
+			}
 			return null;
 		}
 
@@ -142,8 +149,16 @@ const _load = (element, options, asPromise) => {
 		if (source) {
 			let image = element.querySelector('image');
 			if (image instanceof window.SVGImageElement) {
+				img.onload = function () {
+					if (options.setSourcesOnlyOnLoad) {
+						image.setAttribute('href', source);
+					}
+					loadActions(img.currentSrc);
+				};
 				img.src = source;
-				image.setAttribute('href', source);
+				if (options.setSourcesOnlyOnLoad !== true) {
+					image.setAttribute('href', source);
+				}
 				return null;
 			}
 		}
@@ -358,8 +373,6 @@ const _getElements = (element) => {
 function zzLoad (elements, userOptions) {
 	let options = _extend(userOptions);
 	let observer = null;
-
-	console.log(options, userOptions);
 
 	if (window.IntersectionObserver) {
 		observer = new window.IntersectionObserver(_onIntersection(options), {
