@@ -15,12 +15,18 @@ const rollupPluginBabel = require('rollup-plugin-babel');
 // ----------------------------------------
 
 export default {
-	input: './zz-load.es.js',
-	output: {
-		file: './dist/zz-load.js',
-		format: 'iife',
-		name: 'zzLoad'
-	},
+	input: './src/zz-load.es.js',
+	output: [
+		{
+			file: './dist/zz-load.js',
+			format: 'iife',
+			name: 'zzLoad'
+		}, {
+			file: './docs/assets/js/zz-load.js',
+			format: 'iife',
+			name: 'zzLoad'
+		}
+	],
 	plugins: [
 		rollupPluginBabel({
 			babelrc: false,

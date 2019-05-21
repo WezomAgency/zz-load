@@ -1,0 +1,8 @@
+.fade-in {
+	opacity: 0;
+}
+
+.fade-in[data-zzload-is-loaded] {
+	opacity: 1;
+	transition: opacity .6s ease .2s;
+}

@@ -1,10 +1,11 @@
 {
   "name": "zz-load",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "",
   "main": "zz-load.es.js",
   "scripts": {
-    "test": "eslint ./zz-load.es.js --fix",
+    "test": "eslint ./src/*.js --fix",
+    "dev": "rollup -c --watch",
     "build": "npm test && npm run rollup && npm run uglify",
     "rollup": "rollup -c",
     "uglify": "uglifyjs -cmo dist/zz-load.min.js -- dist/zz-load.js"
@@ -31,7 +32,7 @@
     "@babel/core": "^7.2.0",
     "babel-preset-env": "^2.0.0-alpha.20",
     "eslint": "^5.10.0",
-    "eslint-config-wezom-relax": "^1.0.3",
+    "eslint-config-wezom-relax": "^1.1.0",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.0.3",
     "uglify-js": "^3.4.9"
