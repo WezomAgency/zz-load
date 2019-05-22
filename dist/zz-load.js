@@ -24,6 +24,16 @@ var zzLoad = (function () {
 	  sourceContainer: 'data-zzload-container',
 	  sourceInview: 'data-zzload-inview'
 	};
+
+	/**
+	 * @module
+	 * @licence MIT
+	 * @author Oleg Dutchenko <dutchenko.o.dev@gmail.com>
+	 */
+	// ----------------------------------------
+	// Exports
+	// ----------------------------------------
+
 	var events = {
 	  observed: 'zzload:observed',
 	  processed: 'zzload:processed',
