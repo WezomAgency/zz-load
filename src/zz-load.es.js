@@ -10,7 +10,8 @@
 // Imports
 // ----------------------------------------
 
-import { attrs, events } from './data';
+import { attrs } from './attrs';
+import { events } from './events';
 
 // ----------------------------------------
 // Private
