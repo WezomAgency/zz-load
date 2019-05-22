@@ -249,7 +249,7 @@ var zzLoad = (function () {
 	        }
 
 	        if (src === null) {
-	          console.warn('Must provide `data-zzload-source-picture` on all children elements');
+	          console.warn('You must provide all the `data-zzload-source-*` attributes for all children.');
 	          console.warn(element);
 	          return null;
 	        }
@@ -341,40 +341,40 @@ var zzLoad = (function () {
 
 	var _markAs = {
 	  observed: function observed(element) {
-	    element.setAttribute(attrs.isObserved, '');
+	    element.setAttribute(attrs.isObserved, true);
 	    element.dispatchEvent(_createEvent(events.observed, {
 	      element: element
 	    }));
 	  },
 	  processed: function processed(element) {
-	    element.setAttribute(attrs.isProcessed, '');
+	    element.setAttribute(attrs.isProcessed, true);
 	    element.dispatchEvent(_createEvent(events.processed, {
 	      element: element
 	    }));
 	  },
 	  loaded: function loaded(element, source) {
-	    element.setAttribute(attrs.isLoaded, '');
+	    element.setAttribute(attrs.isLoaded, true);
 	    element.dispatchEvent(_createEvent(events.loaded, {
 	      element: element,
 	      source: source
 	    }));
 	  },
 	  failed: function failed(element, source) {
-	    element.setAttribute(attrs.isFailed, '');
+	    element.setAttribute(attrs.isFailed, true);
 	    element.dispatchEvent(_createEvent(events.failed, {
 	      element: element,
 	      source: source
 	    }));
 	  },
 	  inView: function inView(element, source) {
-	    element.setAttribute(attrs.isInView, '');
+	    element.setAttribute(attrs.isInView, true);
 	    element.dispatchEvent(_createEvent(events.inView, {
 	      element: element,
 	      source: source
 	    }));
 	  },
 	  outOfView: function outOfView(element, source) {
-	    element.removeAttribute(attrs.isInView, '');
+	    element.removeAttribute(attrs.isInView);
 	    element.dispatchEvent(_createEvent(events.outOfView, {
 	      element: element,
 	      source: source
