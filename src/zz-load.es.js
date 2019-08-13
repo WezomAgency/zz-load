@@ -4,6 +4,7 @@
  * @module
  * @licence MIT
  * @author Oleg Dutchenko <dutchenko.o.dev@gmail.com>
+ * @version 0.13.0
  */
 
 // ----------------------------------------

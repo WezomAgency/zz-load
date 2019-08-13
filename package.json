@@ -1,6 +1,6 @@
 {
   "name": "zz-load",
-  "version": "0.7.1",
+  "version": "0.13.0",
   "description": "",
   "main": "./src/zz-load.es.js",
   "scripts": {
