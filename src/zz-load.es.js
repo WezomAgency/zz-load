@@ -40,7 +40,9 @@ const _defaultOptions = {
 const _extend = (userOptions = {}) => {
 	let options = {};
 	for (let key in _defaultOptions) {
-		options[key] = userOptions.hasOwnProperty(key) ? userOptions[key] : _defaultOptions[key];
+		options[key] = userOptions.hasOwnProperty(key)
+			? userOptions[key]
+			: _defaultOptions[key];
 	}
 	return options;
 };
@@ -49,7 +51,7 @@ const _extend = (userOptions = {}) => {
  * @param {HTMLElement} element
  * @private
  */
-const _sanitaze = element => {
+const _sanitaze = (element) => {
 	element.removeAttribute(attrs.sourceImg);
 	element.removeAttribute(attrs.sourceSrcSet);
 	element.removeAttribute(attrs.sourceBgImg);
@@ -178,7 +180,8 @@ const _load = (element, options, asPromise) => {
 		if (element.nodeName.toLowerCase() === 'picture') {
 			const pitureImg = element.getElementsByTagName('img')[0];
 			if (pitureImg instanceof window.HTMLImageElement) {
-				const clear = str => str.replace(/^\/\//i, '').replace(window.location.origin, '');
+				const clear = (str) =>
+					str.replace(/^\/\//i, '').replace(window.location.origin, '');
 				const currentSrc = clear(pitureImg.currentSrc);
 				let src = null;
 				let srcset = null;
@@ -186,7 +189,9 @@ const _load = (element, options, asPromise) => {
 					const child = element.children[i];
 					const isSource = child.nodeName.toLowerCase() === 'source';
 					const isImg = child.nodeName.toLowerCase() === 'img';
-					const childSrc = clear(isSource ? child.srcset : isImg ? child.src : '');
+					const childSrc = clear(
+						isSource ? child.srcset : isImg ? child.src : ''
+					);
 					if (currentSrc === childSrc) {
 						src = child.getAttribute(attrs.sourceImg) || null;
 						srcset = child.getAttribute(attrs.sourceSrcSet);
@@ -194,7 +199,9 @@ const _load = (element, options, asPromise) => {
 				}
 
 				if (src === null) {
-					console.warn('You must provide all the `data-zzload-source-*` attributes for all children.');
+					console.warn(
+						'You must provide all the `data-zzload-source-*` attributes for all children.'
+					);
 					console.warn(element);
 					return null;
 				}
@@ -207,7 +214,7 @@ const _load = (element, options, asPromise) => {
 
 						if (child.nodeName.toLowerCase() === 'source') {
 							if (srcset) {
-								src += (', ' + srcset);
+								src += ', ' + srcset;
 							}
 							child.srcset = src;
 						} else if (child.nodeName.toLowerCase() === 'img') {
@@ -321,8 +328,8 @@ const _checkIs = {
  * @return {Function}
  * @private
  */
-const _onIntersection = options => (entries, observer) => {
-	entries.forEach(entry => {
+const _onIntersection = (options) => (entries, observer) => {
+	entries.forEach((entry) => {
 		/** @type {Element} */
 		let element = entry.target;
 		let inViewType = element.hasAttribute(attrs.sourceInview);
